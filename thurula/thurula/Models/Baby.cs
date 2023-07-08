@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace thurula.Models;
 
-public class User
+public class Baby
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
