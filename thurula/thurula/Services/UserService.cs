@@ -13,12 +13,8 @@ public class UserService : IUserService
 
     public string GetMyName()
     {
-        var result = string.Empty;
-        if (_httpContextAccessor.HttpContext is not null)
-        {
-            result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
-        }
-
-        return result;
+        if (_httpContextAccessor.HttpContext is null) return "No user found";
+        var result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        return result ?? "No user found";
     }
 }

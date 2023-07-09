@@ -2,7 +2,6 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using thurula.Models;
@@ -28,15 +27,6 @@ public class AuthController : ControllerBase
     public ActionResult<string> GetMyName()
     {
         return Ok(_userService.GetMyName());
-
-        //var userName = User?.Identity?.Name;
-        //var roleClaims = User?.FindAll(ClaimTypes.Role);
-        //var roles = roleClaims?.Select(c => c.Value).ToList();
-        //var roles2 = User?.Claims
-        //    .Where(c => c.Type == ClaimTypes.Role)
-        //    .Select(c => c.Value)
-        //    .ToList();
-        //return Ok(new { userName, roles, roles2 });
     }
 
     [HttpPost("register")]
@@ -69,13 +59,11 @@ public class AuthController : ControllerBase
         return Ok(token);
     }
 
-    private string CreateToken(User user)
+    private string CreateToken(User userIn)
     {
         List<Claim> claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, "Admin"),
-            new Claim(ClaimTypes.Role, "User"),
+            new Claim(ClaimTypes.Name, userIn.Username),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
@@ -90,7 +78,6 @@ public class AuthController : ControllerBase
         );
 
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
         return jwt;
     }
 }
