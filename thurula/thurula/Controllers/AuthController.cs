@@ -1,11 +1,12 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿﻿using thurula.Models;
+using thurula.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using thurula.Models;
-using thurula.Services;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace thurula.Controllers;
 
@@ -17,40 +18,32 @@ public class AuthController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly IUserService _userService;
 
-    public AuthController(IConfiguration configuration, IUserService userService)
-    {
-        _configuration = configuration;
-        _userService = userService;
-    }
-
-    [HttpGet, Authorize]
-    public ActionResult<string> GetMyName()
-    {
-        return Ok(_userService.GetMyName());
-        // var isAuthorized = User?.Identity?.IsAuthenticated;
-
-        // var userName = User?.Identity?.Name;
-        //var roleClaims = User?.FindAll(ClaimTypes.Role);
-        //var roles = roleClaims?.Select(c => c.Value).ToList();
-        //var roles2 = User?.Claims
-        //    .Where(c => c.Type == ClaimTypes.Role)
-        //    .Select(c => c.Value)
-        //    .ToList();
-        // return Ok(new { User.Identity.Name });
-    }
-
-    [HttpPost("register")]
-    public ActionResult<User> Register(UserDto request)
-    {
-        //check if user exists
-        var users = _userService.Get();
-        if (users.Any(u => u.Username == request.Username))
+        public AuthController(IConfiguration configuration, IUserService userService)
         {
-            return BadRequest("Username already exists.");
+            _configuration = configuration;
+            _userService = userService;
         }
-        
-        string passwordHash
-            = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
+        [HttpGet, Authorize]
+        public ActionResult<string> GetMyName()
+        {
+            return Ok(_userService.GetMyName());
+
+            //var userName = User?.Identity?.Name;
+            //var roleClaims = User?.FindAll(ClaimTypes.Role);
+            //var roles = roleClaims?.Select(c => c.Value).ToList();
+            //var roles2 = User?.Claims
+            //    .Where(c => c.Type == ClaimTypes.Role)
+            //    .Select(c => c.Value)
+            //    .ToList();
+            //return Ok(new { userName, roles, roles2 });
+        }
+
+        [HttpPost("register")]
+        public ActionResult<User> Register(UserDto request)
+        {
+            string passwordHash
+                = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
         user.Username = request.Username;
         user.PasswordHash = passwordHash;
@@ -59,8 +52,8 @@ public class AuthController : ControllerBase
         
         _userService.Create(user);
 
-        return Ok(user);
-    }
+            return Ok(user);
+        }
 
     [HttpPost("login")]
     public ActionResult<User> Login(UserDto request)
@@ -82,12 +75,13 @@ public class AuthController : ControllerBase
         return Ok(token);
     }
 
-    private string CreateToken(User userIn)
-    {
-        List<Claim> claims = new List<Claim>
+        private string CreateToken(User user)
         {
-            new Claim(ClaimTypes.Name, userIn.Username),
-        };
+            List<Claim> claims = new List<Claim> {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, "Admin"),
+                new Claim(ClaimTypes.Role, "User"),
+            };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
             _configuration.GetSection("AppSettings:Token").Value!));

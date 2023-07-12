@@ -17,7 +17,7 @@ public class BabyApiController : ControllerBase
         _babyService = babyService;
     }
     
-    [HttpGet]
+    [HttpGet, Authorize]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Baby>))]
     public ActionResult<IEnumerable<Baby>> Get() =>
         Ok(_babyService.Get());
