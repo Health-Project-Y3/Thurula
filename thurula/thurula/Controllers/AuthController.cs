@@ -1,7 +1,6 @@
 ﻿﻿using thurula.Models;
 using thurula.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,27 +15,18 @@ public class AuthController : ControllerBase
 {
     public static User user = new User();
     private readonly IConfiguration _configuration;
-    private readonly IUserService _userService;
+    private readonly IAuthUserService _authUserService;
 
-        public AuthController(IConfiguration configuration, IUserService userService)
+        public AuthController(IConfiguration configuration, IAuthUserService authUserService)
         {
             _configuration = configuration;
-            _userService = userService;
+            _authUserService = authUserService;
         }
 
         [HttpGet, Authorize]
         public ActionResult<string> GetMyName()
         {
-            return Ok(_userService.GetMyName());
-
-            //var userName = User?.Identity?.Name;
-            //var roleClaims = User?.FindAll(ClaimTypes.Role);
-            //var roles = roleClaims?.Select(c => c.Value).ToList();
-            //var roles2 = User?.Claims
-            //    .Where(c => c.Type == ClaimTypes.Role)
-            //    .Select(c => c.Value)
-            //    .ToList();
-            //return Ok(new { userName, roles, roles2 });
+            return Ok(_authUserService.GetMyName());
         }
 
         [HttpPost("register")]
@@ -50,7 +40,7 @@ public class AuthController : ControllerBase
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         
-        _userService.Create(user);
+        _authUserService.Create(user);
 
             return Ok(user);
         }
@@ -58,7 +48,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public ActionResult<User> Login(UserDto request)
     {
-        var users = _userService.Get();
+        var users = _authUserService.Get();
         user = users.FirstOrDefault(u => u.Username == request.Username);
         if (user == null)
         {
@@ -79,7 +69,7 @@ public class AuthController : ControllerBase
         {
             List<Claim> claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, "Admin"),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Role, "User"),
             };
 

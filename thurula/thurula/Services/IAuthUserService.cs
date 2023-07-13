@@ -2,7 +2,7 @@
 
 namespace thurula.Services;
 
-public interface IUserService
+public interface IAuthUserService
 {
     string GetMyName();
     

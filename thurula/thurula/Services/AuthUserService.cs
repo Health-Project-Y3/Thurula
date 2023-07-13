@@ -4,12 +4,12 @@ using thurula.Models;
 
 namespace thurula.Services;
 
-public class UserService : IUserService
+public class AuthUserService : IAuthUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMongoCollection<User> _users;
 
-    public UserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client)
+    public AuthUserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client)
     {
         _httpContextAccessor = httpContextAccessor;
         var database = client.GetDatabase(settings.DatabaseName);
