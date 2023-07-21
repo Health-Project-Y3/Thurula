@@ -24,4 +24,7 @@ public class BabyService: IBabyService
         _babies.ReplaceOne(baby => baby.Id == id, babyIn);
     public void Remove(Baby babyIn) =>
         _babies.DeleteOne(baby => baby.Id == babyIn.Id);
+    public List<Baby> GetByParentId(string id) =>
+        _babies.Find(baby => baby.Owners.Contains(id)).ToList();
+
 }

@@ -40,9 +40,9 @@ public class BabyChartApiController : ControllerBase
             _babyChartService.DeleteLength(id, month);
             return NoContent();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return BadRequest();
+            return BadRequest(ex.Message);
         }
     }
 
@@ -56,9 +56,9 @@ public class BabyChartApiController : ControllerBase
             _babyChartService.EditLength(id, month, length);
             return NoContent();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return BadRequest();
+            return BadRequest(ex.Message);
         }
     }
 }
