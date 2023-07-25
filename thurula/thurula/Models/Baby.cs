@@ -18,6 +18,11 @@ public class Baby
     [BsonElement("lname")]
     public string LastName { get; set; } = string.Empty;
 
-    
-    
+    [BsonElement("ownerIds")]
+    public List<string> Owners { get; set; } = new List<string>();
+
+    [BsonElement("lengths")]
+    public List<double> Lengths { get; set; } = new List<double>(Enumerable.Repeat(-1.0, 24));
+
+
 }

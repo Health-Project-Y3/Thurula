@@ -15,7 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IAuthUserService, AuthUserService>();
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -50,7 +49,13 @@ builder.Services.AddSingleton<IAtlasDbSettings>(sp =>
     sp.GetRequiredService<IOptions<AtlasDbSettings>>().Value);
 builder.Services.AddSingleton<IMongoClient>(_ =>
     new MongoClient(builder.Configuration.GetValue<string>("AtlasDbSettings:ConnectionString")));
+
+//Custom built Services
+builder.Services.AddScoped<IAuthUserService, AuthUserService>();
 builder.Services.AddScoped<IBabyService, BabyService>();
+builder.Services.AddScoped<IBabyLengthChartService, BabyLengthChartService>();
+
+
 builder.Services.AddControllers(option => { option.ReturnHttpNotAcceptable = false; }).AddNewtonsoftJson()
     .AddXmlDataContractSerializerFormatters();
 

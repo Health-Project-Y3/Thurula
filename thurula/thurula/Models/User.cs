@@ -33,7 +33,7 @@ public class User
     public bool Pregnant { get; set; } = false;
     
     [BsonElement("babyIds")] 
-    public List<string> BabyIds { get; set; } = new();
+    public List<string> Babies { get; set; } = new();
 
     [BsonElement("dueDate")] 
     public DateTime DueDate { get; set; } = DateTime.MinValue; 
