@@ -3,12 +3,15 @@ using thurula.Models;
 
 namespace thurula.Services;
 
-public class BabyChartService : IBabyChartService
+public class BabyLengthChartService : IBabyLengthChartService
 {
     private readonly IBabyService _babyService;
+    private readonly IMongoCollection<BabyLength> _babyLengths;
 
-    public BabyChartService(IAtlasDbSettings settings, IMongoClient client, IBabyService babyService)
+    public BabyLengthChartService(IAtlasDbSettings settings, IMongoClient client, IBabyService babyService)
     {
+        var database = client.GetDatabase(settings.DatabaseName);
+        _babyLengths = database.GetCollection<BabyLength>("baby_lengths");
         _babyService = babyService;
     }
 
@@ -34,7 +37,6 @@ public class BabyChartService : IBabyChartService
         {
             baby.Lengths[month] = length;
             _babyService.Update(id, baby);
-
         } else
         {
             throw new ArgumentException("Baby not found.");
@@ -85,6 +87,42 @@ public class BabyChartService : IBabyChartService
         } else
         {
             throw new ArgumentException("Baby not found.");
+        }
+    }
+
+    /// <summary> Given a baby id, return the list of lengths for that baby </summary>
+    /// <exception cref="ArgumentException"></exception>
+    public List<double> GetLength(string id)
+    {
+        var baby = _babyService.Get(id);
+        if (baby is null)
+        {
+            throw new ArgumentException("Baby not found.");
+        } else
+        {
+            return baby.Lengths;
+        }
+
+        return null;
+    }
+
+    /// <summary> gets all data points in a given percentile corresponding to months from 0-24 inclusive</summary>
+    /// <param name="gender">male,female</param>
+    /// <param name="percentile">5,10,15,25,50,75,90</param>
+    /// <exception cref="NotImplementedException"></exception>
+    public List<double> GetLengthReferenceData(string gender, int percentile)
+    {
+        var filter = Builders<BabyLength>.Filter.And(
+            Builders<BabyLength>.Filter.Eq("Gender", gender),
+            Builders<BabyLength>.Filter.Eq("Percentile", percentile)
+        );
+        var result = _babyLengths.Find(filter).FirstOrDefault();
+        if (result != null)
+        {
+            return result.Lengths;
+        } else
+        {
+            throw new ArgumentException("No data found.");
         }
     }
 }

@@ -7,11 +7,11 @@ namespace thurula.Controllers;
 [ApiController]
 public class BabyChartApiController : ControllerBase
 {
-    private readonly IBabyChartService _babyChartService;
+    private readonly IBabyLengthChartService _babyLengthChartService;
 
-    public BabyChartApiController(IBabyChartService babyChartService)
+    public BabyChartApiController(IBabyLengthChartService babyLengthChartService)
     {
-        _babyChartService = babyChartService;
+        _babyLengthChartService = babyLengthChartService;
     }
 
     [HttpPost("length/add")]
@@ -21,10 +21,9 @@ public class BabyChartApiController : ControllerBase
     {
         try
         {
-            _babyChartService.AddLength(id, month, length);
+            _babyLengthChartService.AddLength(id, month, length);
             return NoContent();
-        }
-        catch (Exception ex)
+        } catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -37,10 +36,9 @@ public class BabyChartApiController : ControllerBase
     {
         try
         {
-            _babyChartService.DeleteLength(id, month);
+            _babyLengthChartService.DeleteLength(id, month);
             return NoContent();
-        }
-        catch (Exception ex)
+        } catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
@@ -53,10 +51,39 @@ public class BabyChartApiController : ControllerBase
     {
         try
         {
-            _babyChartService.EditLength(id, month, length);
+            _babyLengthChartService.EditLength(id, month, length);
             return NoContent();
+        } catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
-        catch (Exception ex)
+    }
+
+    [HttpPost("length/get")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult GetLengths(string id)
+    {
+        try
+        {
+            var lengths = _babyLengthChartService.GetLength(id);
+            return Ok(lengths);
+        } catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("length/getreference")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult GetReferenceLengths(string gender, int percentile)
+    {
+        try
+        {
+            var lengths = _babyLengthChartService.GetLengthReferenceData(gender, percentile);
+            return Ok(lengths);
+        } catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }

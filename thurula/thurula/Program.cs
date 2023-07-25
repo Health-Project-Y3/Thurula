@@ -53,7 +53,7 @@ builder.Services.AddSingleton<IMongoClient>(_ =>
 //Custom built Services
 builder.Services.AddScoped<IAuthUserService, AuthUserService>();
 builder.Services.AddScoped<IBabyService, BabyService>();
-builder.Services.AddScoped<IBabyChartService, BabyChartService>();
+builder.Services.AddScoped<IBabyLengthChartService, BabyLengthChartService>();
 
 
 builder.Services.AddControllers(option => { option.ReturnHttpNotAcceptable = false; }).AddNewtonsoftJson()
