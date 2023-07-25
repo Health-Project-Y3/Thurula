@@ -24,5 +24,7 @@ public class Baby
     [BsonElement("lengths")]
     public List<double> Lengths { get; set; } = new List<double>(Enumerable.Repeat(-1.0, 24));
 
+    [BsonElement("weights")]
+    public List<double> Weights { get; set; } = new List<double>(Enumerable.Repeat(-1.0, 24));
 
 }
