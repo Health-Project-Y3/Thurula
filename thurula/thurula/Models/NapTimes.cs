@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace thurula.Models;
 
-public class BabyNaps
+public class NapTimes
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -23,7 +23,8 @@ public class BabyNaps
     public string SleepNotes { get; set; } = string.Empty;
 
     [BsonElement("sleepQuality")]
-    public int SleepQuality { get; set; } = -1;
+    [Range(0,5)]
+    public int SleepQuality { get; set; }
 
     [BsonElement("loggedBy")]
     public string LoggedBy { get; set; } = string.Empty;

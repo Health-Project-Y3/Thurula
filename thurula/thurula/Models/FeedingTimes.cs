@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace thurula.Models;
 
-public class BabyFeeding
+public class FeedingTimes
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
