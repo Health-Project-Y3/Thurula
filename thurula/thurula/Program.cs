@@ -55,6 +55,7 @@ builder.Services.AddScoped<IAuthUserService, AuthUserService>();
 builder.Services.AddScoped<IBabyService, BabyService>();
 builder.Services.AddScoped<IBabyLengthChartService, BabyLengthChartService>();
 builder.Services.AddScoped<IBabyWeightChartService, BabyWeightChartService>();
+builder.Services.AddScoped<INapService, NapService>();
 
 builder.Services.AddControllers(option => { option.ReturnHttpNotAcceptable = false; }).AddNewtonsoftJson()
     .AddXmlDataContractSerializerFormatters();
