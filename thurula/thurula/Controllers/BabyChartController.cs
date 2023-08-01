@@ -5,7 +5,7 @@ namespace thurula.Controllers;
 
 [Route("api/babychart")]
 [ApiController]
-public class BabyChartApiController : ControllerBase
+public class BabyChartController : ControllerBase
 {
     private readonly IBabyLengthChartService _babyLengthChartService;
     private readonly IBabyWeightChartService _babyWeightChartService;
@@ -17,7 +17,7 @@ public class BabyChartApiController : ControllerBase
         public double Value { get; set; }
     }
 
-    public BabyChartApiController(IBabyLengthChartService babyLengthChartService,
+    public BabyChartController(IBabyLengthChartService babyLengthChartService,
         IBabyWeightChartService babyWeightChartService)
     {
         _babyLengthChartService = babyLengthChartService;

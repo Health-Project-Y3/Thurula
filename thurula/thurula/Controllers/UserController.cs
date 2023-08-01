@@ -5,27 +5,27 @@ using thurula.Services;
 
 namespace thurula.Controllers;
 
-[Route("api/baby")]
+[Route("api/user")]
 [ApiController]
-public class BabyApiController : ControllerBase
+public class UserController : ControllerBase
 {
-    private readonly IBabyService _babyService;
+    private readonly IAuthUserService _authUserService;
 
-    public BabyApiController(IBabyService babyService)
+    public UserController(IAuthUserService authUserService)
     {
-        _babyService = babyService;
+        _authUserService = authUserService;
     }
     
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Baby>))]
-    public ActionResult<IEnumerable<Baby>> Get() =>
-        Ok(_babyService.Get());
+    [HttpGet, Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
+    public ActionResult<IEnumerable<User>> Get() =>
+        Ok(_authUserService.Get());
 
-    [HttpGet("{id}", Name = "GetBaby")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Baby))]
+    [HttpGet("{id}", Name = "GetUser")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult<Baby> GetBaby(string id)
+    public ActionResult<User> GetUser(string id)
     {
         if (string.IsNullOrEmpty(id))
         {
@@ -33,8 +33,8 @@ public class BabyApiController : ControllerBase
         }
         try
         {
-            var baby = _babyService.Get(id);
-            return Ok(baby);
+            var user = _authUserService.Get(id);
+            return Ok(user);
         }
         catch (Exception)
         {
@@ -43,13 +43,13 @@ public class BabyApiController : ControllerBase
     }
     
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Baby))]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(User))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public ActionResult<Baby> CreateBaby([FromBody] Baby baby)
+    public ActionResult<User> CreateUser([FromBody] User user)
     {
-        _babyService.Create(baby);
-        return CreatedAtRoute("GetBaby", new {id = baby.Id}, baby);
+        _authUserService.Create(user);
+        return CreatedAtRoute("GetUser", new {id = user.Id}, user);
     }
     
     [HttpPut("{id}")]
@@ -57,14 +57,14 @@ public class BabyApiController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     
-    public IActionResult UpdateBaby(string id, [FromBody] Baby baby)
+    public IActionResult UpdateUser(string id, [FromBody] User user)
     {
-        if (baby == null)
+        if (user == null)
         {
             return BadRequest();
         }
 
-        if (baby.Id != id)
+        if (user.Id != id)
         {
             return BadRequest();
         }
@@ -74,7 +74,7 @@ public class BabyApiController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        _babyService.Update(id, baby);
+        _authUserService.Update(id, user);
         return NoContent();
     }
     
@@ -82,20 +82,20 @@ public class BabyApiController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public IActionResult DeleteBaby(string id)
+    public IActionResult DeleteUser(string id)
     {
         if (string.IsNullOrEmpty(id))
         {
             return BadRequest();
         }
 
-        var baby = _babyService.Get(id);
-        if (baby == null)
+        var user = _authUserService.Get(id);
+        if (user == null)
         {
             return NotFound();
         }
 
-        _babyService.Remove(baby);
+        _authUserService.Remove(user);
         return NoContent();
     }
     
@@ -104,13 +104,13 @@ public class BabyApiController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     
-    public IActionResult PatchBaby(string id, [FromBody] Baby baby)
+    public IActionResult PatchUser(string id, [FromBody] User user)
     {
-        if (baby == null)
+        if (user == null)
         {
             return BadRequest();
         }
-        if (baby.Id != id)
+        if (user.Id != id)
         {
             return BadRequest();
         }
@@ -119,7 +119,7 @@ public class BabyApiController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        _babyService.Update(id, baby);
+        _authUserService.Update(id, user);
         return NoContent();
     }
     

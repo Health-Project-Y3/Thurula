@@ -102,8 +102,6 @@ public class BabyLengthChartService : IBabyLengthChartService
         {
             return baby.Lengths;
         }
-
-        return null;
     }
 
     /// <summary> gets all data points in a given percentile corresponding to months from 0-24 inclusive</summary>
