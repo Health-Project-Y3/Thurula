@@ -16,14 +16,14 @@ public class NapController : ControllerBase
         _napService = napService;
     }
 
-    [HttpGet("getnap", Name = "GetNap")]
+    [HttpGet("{id}", Name = "GetNap")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(NapTimes))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<NapTimes> GetNap(string napId)
+    public ActionResult<NapTimes> GetNap(string id)
     {
         try
         {
-            var nap = _napService.Get(napId);
+            var nap = _napService.Get(id);
             return Ok(nap);
         } catch (Exception)
         {
@@ -31,7 +31,7 @@ public class NapController : ControllerBase
         }
     }
 
-    [HttpGet("getbabynaps", Name = "GetBabyNaps")]
+    [HttpGet("baby/{id}", Name = "GetBabyNaps")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<NapTimes>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public ActionResult<IEnumerable<NapTimes>> Get(string id)
@@ -46,7 +46,7 @@ public class NapController : ControllerBase
         }
     }
 
-    [HttpPost("create", Name = "CreateNap")]
+    [HttpPost(Name = "CreateNap")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(NapTimes))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<NapTimes> CreateNap([FromBody] NapTimes napTime)
@@ -63,7 +63,7 @@ public class NapController : ControllerBase
 
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(NapTimes))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [HttpPut("updatenap", Name = "UpdateNap")]
+    [HttpPut(Name = "UpdateNap")]
     public ActionResult<NapTimes> UpdateNap([FromBody] NapTimes napIn)
     {
         try
@@ -78,12 +78,12 @@ public class NapController : ControllerBase
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [HttpDelete("deletenap", Name = "DeleteNap")]
-    public ActionResult DeleteNap([FromBody] string napId)
+    [HttpDelete("{id}",Name = "DeleteNap")]
+    public ActionResult DeleteNap(String id)
     {
         try
         {
-            _napService.Remove(_napService.Get(napId));
+            _napService.Remove(_napService.Get(id));
             return NoContent();
         } catch (Exception)
         {
@@ -95,12 +95,16 @@ public class NapController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(NapTimes))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [HttpPatch("patchnap", Name = "PatchNap")]
+    [HttpPatch("{id}", Name = "PatchNap")]
     public ActionResult<NapTimes> PatchNap(string id, [FromBody] JsonPatchDocument<NapTimes> patchDoc)
     {
         try
         {
             var nap = _napService.Get(id);
+            if (nap == null)
+            {
+                return NotFound();
+            }
             patchDoc.ApplyTo(nap, ModelState);
             _napService.Update(nap);
             if (!ModelState.IsValid)
@@ -111,7 +115,7 @@ public class NapController : ControllerBase
             return Ok(nap);
         } catch (Exception)
         {
-            return NotFound();
+            return BadRequest();
         }
     }
 
@@ -163,7 +167,7 @@ public class NapController : ControllerBase
 
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(NapTimes))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [HttpPost("addsleepnotes", Name = "AddSleepNotes")]
+    [HttpPost("sleepnotes", Name = "AddSleepNotes")]
     public ActionResult<NapTimes> AddSleepNotes([FromBody] NapTimes napIn)
     {
         try
