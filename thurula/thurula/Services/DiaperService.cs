@@ -22,6 +22,7 @@ public class DiaperService : IDiaperService
         {
             throw new Exception("Diaper change not found");
         }
+
         return diaper;
     }
 
@@ -35,14 +36,17 @@ public class DiaperService : IDiaperService
     /// <summary>   Creates a diaper change given all details </summary>
     public DiaperTimes Create(DiaperTimes diaper)
     {
-        if (diaper.DiaperType != "wet" && diaper.DiaperType != "dirty" && diaper.DiaperType != "mixed")
+        if (diaper.DiaperType != "wet" && diaper.DiaperType != "dirty" && diaper.DiaperType != "mixed" &&
+            diaper.DiaperType != "neither")
         {
             throw new Exception("Invalid diaper type");
         }
+
         if (diaper.Time == DateTime.MinValue)
         {
             throw new Exception("Time must be set");
         }
+
         _babydiapers.InsertOne(diaper);
         return diaper;
     }
@@ -50,10 +54,12 @@ public class DiaperService : IDiaperService
     /// <summary>   Updates the given diaper change by completely replacing </summary>
     public void Update(string id, DiaperTimes diaperIn)
     {
-        if (diaperIn.DiaperType != "wet" && diaperIn.DiaperType != "dirty" && diaperIn.DiaperType != "mixed")
+        if (diaperIn.DiaperType != "wet" && diaperIn.DiaperType != "dirty" && diaperIn.DiaperType != "mixed" &&
+            diaperIn.DiaperType != "neither")
         {
             throw new Exception("Invalid diaper type");
         }
+
         if (diaperIn.Time == DateTime.MinValue)
         {
             throw new Exception("Time must be set");
@@ -76,9 +82,7 @@ public class DiaperService : IDiaperService
         {
             throw new Exception("Diaper change not found");
         }
+
         _babydiapers.DeleteOne(diaper => diaper.Id == id);
     }
-
-
-
 }

@@ -25,9 +25,9 @@ public class DiaperController : ControllerBase
         {
             var diaper = _diaperService.Get(id);
             return Ok(diaper);
-        } catch (Exception)
+        } catch (Exception ex)
         {
-            return NotFound();
+            return NotFound(ex.Message);
         }
     }
 
@@ -40,9 +40,9 @@ public class DiaperController : ControllerBase
         {
             var diaperTimes = _diaperService.GetBabyDiapers(id);
             return Ok(diaperTimes);
-        } catch (Exception)
+        } catch (Exception ex)
         {
-            return NotFound();
+            return NotFound(ex.Message);
         }
     }
 
@@ -55,9 +55,9 @@ public class DiaperController : ControllerBase
         {
             var dp = _diaperService.Create(diaperTime);
             return CreatedAtRoute("GetDiaper", new { id = dp.Id }, dp);
-        } catch (Exception)
+        } catch (Exception ex)
         {
-            return BadRequest();
+            return BadRequest(ex.Message);
         }
     }
 
@@ -70,9 +70,9 @@ public class DiaperController : ControllerBase
         {
             _diaperService.Update(id, diaperIn);
             return CreatedAtRoute("GetDiaper", new { id }, diaperIn);
-        } catch (Exception)
+        } catch (Exception ex)
         {
-            return BadRequest();
+            return BadRequest(ex.Message);
         }
     }
 
@@ -85,9 +85,9 @@ public class DiaperController : ControllerBase
         {
             _diaperService.Remove(id);
             return NoContent();
-        } catch (Exception)
+        } catch (Exception ex)
         {
-            return BadRequest();
+            return BadRequest(ex.Message);
         }
     }
 
@@ -114,9 +114,9 @@ public class DiaperController : ControllerBase
             }
 
             return Ok(diaper);
-        } catch (Exception)
+        } catch (Exception ex)
         {
-            return BadRequest();
+            return BadRequest(ex.Message);
         }
     }
 }
