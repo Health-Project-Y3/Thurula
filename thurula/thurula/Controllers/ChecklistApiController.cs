@@ -67,6 +67,30 @@ public class ChecklistApiController : ControllerBase
     }
 
 
+    [HttpGet("week2", Name = "GetWeek2List")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Checklist>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<List<Checklist>> GetWeek2List()
+    {
+        try
+        {
+            var week2List = _checklistService.GetAllWeek2(); 
+            if (week2List != null && week2List.Any())
+            {
+                return Ok(week2List);
+            }
+            else
+            {
+                return NotFound("here");
+            }
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Checklist))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -28,6 +28,14 @@ public class ChecklistService: IChecklistService
         return _checklists.Find<Checklist>(checklist => checklist.Period == "Newborn").ToList();
     }
 
+    public List<Checklist> GetAllWeek2()
+    {
+        List<Checklist>  check = _checklists.Find<Checklist>(checklist => checklist.Period == "Week2").ToList();
+        // Console.WriteLine(check);
+        check.ForEach(Console. WriteLine);
+        return _checklists.Find<Checklist>(checklist => checklist.Period == "Week2").ToList();
+    }
+
     public Checklist Create(Checklist checklist)
     {
         _checklists.InsertOne(checklist);

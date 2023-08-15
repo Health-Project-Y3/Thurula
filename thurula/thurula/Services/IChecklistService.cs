@@ -10,4 +10,6 @@ public interface IChecklistService
     // void Update(string id, Checklist babyIn);
     // void Remove(Checklist babyIn);
     List<Checklist> GetAllNewborns();
+
+    List<Checklist> GetAllWeek2();
 }
