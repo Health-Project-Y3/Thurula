@@ -9,4 +9,7 @@ public interface IBabyService
     Baby Create(Baby baby);
     void Update(string id, Baby babyIn);
     void Remove(Baby babyIn);
+    void MarkVaccineAppointment(string babyId, string vaccineId, bool mark);
+    List<VaccineAppointments> GetDueVaccines(string babyId);
+    List<VaccineAppointments> GetCompletedVaccines(string babyId);
 }

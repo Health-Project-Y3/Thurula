@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace thurula.Models;
@@ -9,6 +10,7 @@ public class DiaperTimes
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
+    [Required]
     [BsonElement("babyId")]
     public string BabyId { get; set; } = string.Empty;
 
