@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace thurula.Models;
@@ -28,7 +29,8 @@ public class FeedingTimes
     public string FeedingNotes { get; set; } = string.Empty;
 
     [BsonElement("feedingMood")]
-    public int FeedingMood { get; set; } = -1;
+    [Range(0,5)]
+    public int FeedingMood { get; set; }
 
     [BsonElement("loggedBy")]
     public string LoggedBy { get; set; } = string.Empty;

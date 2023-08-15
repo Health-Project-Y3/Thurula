@@ -57,6 +57,10 @@ builder.Services.AddScoped<IBabyLengthChartService, BabyLengthChartService>();
 builder.Services.AddScoped<IBabyWeightChartService, BabyWeightChartService>();
 builder.Services.AddScoped<INapService, NapService>();
 builder.Services.AddScoped<IChecklistService, ChecklistService>();
+builder.Services.AddScoped<IDiaperService, DiaperService>();
+builder.Services.AddScoped<IFeedingService, FeedingService>();
+builder.Services.AddScoped<IVaccineAppointmentService, VaccineAppointmentService>();
+
 
 builder.Services.AddControllers(option => { option.ReturnHttpNotAcceptable = false; }).AddNewtonsoftJson()
     .AddXmlDataContractSerializerFormatters();
