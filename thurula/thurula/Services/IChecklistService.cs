@@ -9,4 +9,5 @@ public interface IChecklistService
     Checklist Create(Checklist checklist);
     // void Update(string id, Checklist babyIn);
     // void Remove(Checklist babyIn);
+    List<Checklist> GetAllNewborns();
 }

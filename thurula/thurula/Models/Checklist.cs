@@ -4,6 +4,19 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace thurula.Models;
 
+public class Instruction
+{
+    [Required]
+    [MaxLength(500)]
+    [BsonElement("instruction")]
+    public string InstructionText { get; set; }
+
+    [Required]
+    // [MaxLength(500)]
+    [BsonElement("checked")]
+    public bool Checked { get; set; }
+}
+
 public class Checklist
 {
     [BsonId]
@@ -17,15 +30,12 @@ public class Checklist
     [MaxLength(500)]
     [BsonElement("category")]
     public string Category { get; set; } = string.Empty;
+
     [Required]
     [MaxLength(500)]
-    [BsonElement("instruction")]
-    public string Instruction { get; set; } = string.Empty;
-    [Required]
-    // [MaxLength(500)]
-    [BsonElement("checked")]
-    public bool Checked { get; set; } = false;
-
+    [BsonElement("instructions")]
+    public List<Instruction> Instructions { get; set; }
+    // public array Instructions { get; set; } = array.Empty;
     
     
 }

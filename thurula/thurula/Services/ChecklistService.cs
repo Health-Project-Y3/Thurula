@@ -19,6 +19,15 @@ public class ChecklistService: IChecklistService
     public Checklist Get(string id) =>
         _checklists.Find<Checklist>(checklist => checklist.Id == id).FirstOrDefault();
 
+
+    public List<Checklist> GetAllNewborns()
+    {
+        List<Checklist>  check = _checklists.Find<Checklist>(checklist => checklist.Period == "Newborn").ToList();
+        // Console.WriteLine(check);
+        check.ForEach(Console. WriteLine);
+        return _checklists.Find<Checklist>(checklist => checklist.Period == "Newborn").ToList();
+    }
+
     public Checklist Create(Checklist checklist)
     {
         _checklists.InsertOne(checklist);

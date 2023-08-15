@@ -16,7 +16,7 @@ public class ChecklistApiController : ControllerBase
     {
         _checklistService = checklistService;
     }
-    
+
     [HttpGet, Authorize]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Checklist>))]
     public ActionResult<IEnumerable<Checklist>> Get() =>
@@ -42,7 +42,31 @@ public class ChecklistApiController : ControllerBase
             return NotFound();
         }
     }
-    
+
+    [HttpGet("newborns", Name = "GetNewbornsList")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Checklist>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<List<Checklist>> GetNewbornsList()
+    {
+        try
+        {
+            var newbornsList = _checklistService.GetAllNewborns(); 
+            if (newbornsList != null && newbornsList.Any())
+            {
+                return Ok(newbornsList);
+            }
+            else
+            {
+                return NotFound("here");
+            }
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Checklist))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,14 +74,14 @@ public class ChecklistApiController : ControllerBase
     public ActionResult<Checklist> CreateChecklist([FromBody] Checklist checklist)
     {
         _checklistService.Create(checklist);
-        return CreatedAtRoute("GetChecklist", new {id = checklist.Id}, checklist);
+        return CreatedAtRoute("GetChecklist", new { id = checklist.Id }, checklist);
     }
-    
+
     // [HttpPut("{id}")]
     // [ProducesResponseType(StatusCodes.Status204NoContent)]
     // [ProducesResponseType(StatusCodes.Status400BadRequest)]
     // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    
+
     // public IActionResult UpdateBaby(string id, [FromBody] Baby baby)
     // {
     //     if (baby == null)
@@ -78,7 +102,7 @@ public class ChecklistApiController : ControllerBase
     //     _babyService.Update(id, baby);
     //     return NoContent();
     // }
-    
+
     // [HttpDelete("{id}")]
     // [ProducesResponseType(StatusCodes.Status204NoContent)]
     // [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -99,12 +123,12 @@ public class ChecklistApiController : ControllerBase
     //     _babyService.Remove(baby);
     //     return NoContent();
     // }
-    
+
     // [HttpPatch("{id}")]
     // [ProducesResponseType(StatusCodes.Status204NoContent)]
     // [ProducesResponseType(StatusCodes.Status400BadRequest)]
     // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    
+
     // public IActionResult PatchBaby(string id, [FromBody] Baby baby)
     // {
     //     if (baby == null)
@@ -123,5 +147,5 @@ public class ChecklistApiController : ControllerBase
     //     _babyService.Update(id, baby);
     //     return NoContent();
     // }
-    
+
 }
