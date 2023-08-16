@@ -46,6 +46,22 @@ public class NapController : ControllerBase
         }
     }
 
+    //get naps of a baby from monday to sunday inclusive
+    [HttpGet("baby/{id}/range", Name = "GetBabyNapsRange")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<NapTimes>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<IEnumerable<NapTimes>> GetBabyNapsRange(string id, string startDate, string endDate)
+    {
+        try
+        {
+            var napTimes = _napService.GetBabyNapsRange(id, DateTime.Parse(startDate), DateTime.Parse(endDate));
+            return Ok(napTimes);
+        } catch (Exception)
+        {
+            return NotFound();
+        }
+    }
+
     [HttpPost(Name = "CreateNap")]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(NapTimes))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -78,7 +94,7 @@ public class NapController : ControllerBase
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [HttpDelete("{id}",Name = "DeleteNap")]
+    [HttpDelete("{id}", Name = "DeleteNap")]
     public ActionResult DeleteNap(String id)
     {
         try
@@ -105,6 +121,7 @@ public class NapController : ControllerBase
             {
                 return NotFound();
             }
+
             patchDoc.ApplyTo(nap, ModelState);
             _napService.Update(nap);
             if (!ModelState.IsValid)

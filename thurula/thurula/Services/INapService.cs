@@ -6,6 +6,7 @@ public interface INapService
 {
     NapTimes Get(string napId);
     List<NapTimes> GetBabyNaps(string babyId);
+    List<NapTimes> GetBabyNapsRange(string babyId, DateTime start, DateTime end);
     NapTimes Create(NapTimes napTime);
     void Update(NapTimes napTimeIn);
     void Remove(NapTimes napTimeIn);
