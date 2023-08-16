@@ -35,6 +35,13 @@ public class NapService : INapService
         return naps;
     }
 
+    /// <summary>   Gets all naps for a baby within a given date range</summary>
+    public List<NapTimes> GetBabyNapsRange(string babyId, DateTime start, DateTime end)
+    {
+        var naps = _babynaps.Find(bn => bn.BabyId == babyId && bn.StartTime >= start && bn.EndTime <= end).SortBy(bn => bn.StartTime).ToList();
+        return naps;
+    }
+
     /// <summary>   Creates a nap given all details </summary>
     public NapTimes Create(NapTimes napTime)
     {
