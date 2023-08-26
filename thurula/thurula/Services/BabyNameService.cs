@@ -7,9 +7,10 @@ public class BabyNameService : IBabyNameService
 {
     private readonly IMongoCollection<BabyNames> _babyNames;
 
-    public BabyNameService(IMongoCollection<BabyNames> babyNames)
+    public BabyNameService(IAtlasDbSettings settings, IMongoClient client)
     {
-        _babyNames = babyNames;
+        var database = client.GetDatabase(settings.DatabaseName);
+        _babyNames = database.GetCollection<BabyNames>("baby_names");
     }
 
     /// <summary> Get all baby names </summary>
@@ -18,7 +19,7 @@ public class BabyNameService : IBabyNameService
     public BabyNames Get(string id) => _babyNames.Find(babyName => babyName.Id == id).FirstOrDefault();
 
     /// <summary> Get all baby names with the given ids </summary>
-    public List<BabyNames> Get(List<string> ids)
+    public List<BabyNames> Get(IEnumerable<string> ids)
     {
         var filter = Builders<BabyNames>.Filter.In(babyName => babyName.Id, ids);
         return _babyNames.Find(filter).ToList();

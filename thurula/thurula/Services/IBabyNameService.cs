@@ -6,6 +6,6 @@ public interface IBabyNameService
 {
     List<BabyNames> Get();
     BabyNames Get(string id);
-    List<BabyNames> Get(List<string> ids);
+    List<BabyNames> Get(IEnumerable<string> ids);
     List<BabyNames> GetByGender(string gender);
 }

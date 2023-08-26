@@ -36,6 +36,9 @@ public class User
     public List<string> Babies { get; set; } = new();
 
     [BsonElement("dueDate")] 
-    public DateTime DueDate { get; set; } = DateTime.MinValue; 
-    
+    public DateTime DueDate { get; set; } = DateTime.MinValue;
+
+    [BsonElement("favouriteNames")]
+    public List<string> FavouriteNames { get; set; } = new();
+
 }
