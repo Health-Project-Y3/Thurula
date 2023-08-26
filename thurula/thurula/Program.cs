@@ -60,6 +60,8 @@ builder.Services.AddScoped<IChecklistService, ChecklistService>();
 builder.Services.AddScoped<IDiaperService, DiaperService>();
 builder.Services.AddScoped<IFeedingService, FeedingService>();
 builder.Services.AddScoped<IVaccineAppointmentService, VaccineAppointmentService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IBabyNameService, BabyNameService>();
 
 
 builder.Services.AddControllers(option => { option.ReturnHttpNotAcceptable = false; }).AddNewtonsoftJson()

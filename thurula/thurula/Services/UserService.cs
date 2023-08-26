@@ -8,10 +8,12 @@ public class UserService : IUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMongoCollection<User> _users;
+    private readonly IBabyNameService _babyNames;
 
-    public UserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client)
+    public UserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client, IBabyNameService babyNames)
     {
         _httpContextAccessor = httpContextAccessor;
+        _babyNames = babyNames;
         var database = client.GetDatabase(settings.DatabaseName);
         _users = database.GetCollection<User>("users");
     }
@@ -46,5 +48,48 @@ public class UserService : IUserService
     public void Update(string id, User user)
     {
         _users.ReplaceOne(user => user.Id == id, user);
+    }
+
+    public List<BabyNames> GetFavouriteNames(string id)
+    {
+        var user = _users.Find(user => user.Id == id).FirstOrDefault();
+        if (user == null)
+        {
+            throw new Exception("User not found.");
+        }
+        var favouriteNames = user.FavouriteNames;
+        var babyNames = _babyNames.Get(favouriteNames);
+
+        return babyNames;
+    }
+
+    public void AddFavouriteName(string id, string nameId)
+    {
+        var user = _users.Find(user => user.Id == id).FirstOrDefault();
+        if (user == null)
+        {
+            throw new Exception("User not found.");
+        }
+        if (user.FavouriteNames.Contains(nameId))
+        {
+            throw new Exception("Name already in favourites.");
+        }
+        user.FavouriteNames.Add(nameId);
+        Update(id, user);
+    }
+
+    public void RemoveFavouriteName(string id, string nameId)
+    {
+        var user = _users.Find(user => user.Id == id).FirstOrDefault();
+        if (user == null)
+        {
+            throw new Exception("User not found.");
+        }
+        if (!user.FavouriteNames.Contains(nameId))
+        {
+            throw new Exception("Name not in favourites.");
+        }
+        user.FavouriteNames.Remove(nameId);
+        Update(id, user);
     }
 }
