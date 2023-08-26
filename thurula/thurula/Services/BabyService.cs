@@ -67,7 +67,15 @@ public class BabyService : IBabyService
         var baby = Get(babyId);
         if (baby == null)
             throw new Exception("Baby not found");
-        return _vaccineAppointmentService.GetVaccines(baby.DueVaccines);
+        var v =  _vaccineAppointmentService.GetVaccines(baby.DueVaccines);
+
+        //calculate the days left for each appointment
+        foreach (var vaccine in v)
+        {
+            var bornFor = (int) (DateTime.Now - baby.BirthDate).TotalDays;
+            vaccine.DaysFromBirth -= bornFor;
+        }
+        return v;
     }
 
     public List<VaccineAppointments> GetCompletedVaccines(string babyId)
