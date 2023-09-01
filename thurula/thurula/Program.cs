@@ -64,16 +64,16 @@ builder.Services.AddScoped<IFeedingService, FeedingService>();
 builder.Services.AddScoped<IVaccineAppointmentService, VaccineAppointmentService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBabyNameService, BabyNameService>();
-builder.Services.AddSignalR(
-    hubOptions =>
-    {
+builder.Services.AddScoped<IForumService, ForumService>();
+
+
+
+builder.Services.AddSignalR(hubOptions => {
         hubOptions.EnableDetailedErrors = true;
         hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(1);
         hubOptions.ClientTimeoutInterval = TimeSpan.FromMinutes(2);
         hubOptions.HandshakeTimeout = TimeSpan.FromMinutes(1);
-    }
-);
-
+    });
 
 builder.Services.AddControllers(option => { option.ReturnHttpNotAcceptable = false; }).AddNewtonsoftJson()
     .AddXmlDataContractSerializerFormatters();
