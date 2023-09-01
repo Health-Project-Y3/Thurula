@@ -1,11 +1,13 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Serilog;
 using Swashbuckle.AspNetCore.Filters;
+using thurula.Hubs;
 using thurula.Models;
 using thurula.Services;
 
@@ -62,6 +64,15 @@ builder.Services.AddScoped<IFeedingService, FeedingService>();
 builder.Services.AddScoped<IVaccineAppointmentService, VaccineAppointmentService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBabyNameService, BabyNameService>();
+builder.Services.AddSignalR(
+    hubOptions =>
+    {
+        hubOptions.EnableDetailedErrors = true;
+        hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(1);
+        hubOptions.ClientTimeoutInterval = TimeSpan.FromMinutes(2);
+        hubOptions.HandshakeTimeout = TimeSpan.FromMinutes(1);
+    }
+);
 
 
 builder.Services.AddControllers(option => { option.ReturnHttpNotAcceptable = false; }).AddNewtonsoftJson()
@@ -87,7 +98,7 @@ if (app.Environment.IsDevelopment())
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseAuthorization();
-
+app.MapHub<ForumHub>("forum");
 app.MapControllers();
 
 app.Run();
