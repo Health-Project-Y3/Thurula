@@ -98,8 +98,8 @@ public class ForumController : ControllerBase
     {
         try
         {
-            _forumService.AddQuestion(question);
-            return Ok();
+            var q  = _forumService.AddQuestion(question);
+            return Ok(q);
         } catch (Exception e)
         {
             return BadRequest(e.Message);
@@ -192,12 +192,11 @@ public class ForumController : ControllerBase
     [HttpPost("answers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult AddAnswer(string questionId, [FromBody] ForumAnswer answer)
+    public ActionResult<ForumAnswer> AddAnswer(string questionId, [FromBody] ForumAnswer answer)
     {
         try
         {
-            _forumService.AddAnswer(questionId, answer);
-            return Ok();
+            return Ok(_forumService.AddAnswer(questionId, answer));
         } catch (Exception e)
         {
             return BadRequest(e.Message);

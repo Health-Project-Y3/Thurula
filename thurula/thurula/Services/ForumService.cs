@@ -114,11 +114,12 @@ public class ForumService : IForumService
         return questions;
     }
 
-    public void AddQuestion(ForumQuestion question)
+    public ForumQuestion AddQuestion(ForumQuestion question)
     {
         if (question.Description == "") throw new Exception("Description cannot be empty");
         if (question.Question == "") throw new Exception("Question cannot be empty");
         _forumQuestions.InsertOne(question);
+        return question;
     }
 
     public void DeleteQuestion(string id)
@@ -126,7 +127,7 @@ public class ForumService : IForumService
         _forumQuestions.DeleteOne(question => question.Id == id);
     }
 
-    public void AddAnswer(string questionId, ForumAnswer answer)
+    public ForumAnswer AddAnswer(string questionId, ForumAnswer answer)
     {
         answer.Id = ObjectId.GenerateNewId().ToString();
         answer.QuestionId = questionId;
@@ -134,6 +135,7 @@ public class ForumService : IForumService
         var question = GetQuestion(questionId);
         question.Answers.Add(answer);
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
+        return answer;
     }
 
     public void DeleteAnswer(string questionId, string answerId)
