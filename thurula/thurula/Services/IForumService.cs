@@ -17,8 +17,12 @@ public interface IForumService
     void AddAnswer(string questionId, ForumAnswer answer);
     void DeleteAnswer(string questionId, string answerId);
     void UpvoteQuestion(string questionId);
+    void UndoUpvoteQuestion(string questionId);
     void DownvoteQuestion(string questionId);
+    void UndoDownvoteQuestion(string questionId);
     void UpvoteAnswer(string questionId, string answerId);
+    void UndoUpvoteAnswer(string questionId, string answerId);
     void DownvoteAnswer(string questionId, string answerId);
+    void UndoDownvoteAnswer(string questionId, string answerId);
     void AcceptAnswer(string questionId, string answerId);
 }

@@ -150,10 +150,24 @@ public class ForumService : IForumService
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
+    public void UndoUpvoteQuestion(string questionId)
+    {
+        var question = GetQuestion(questionId);
+        question.Upvotes--;
+        _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
+    }
+
     public void DownvoteQuestion(string questionId)
     {
         var question = GetQuestion(questionId);
         question.Downvotes++;
+        _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
+    }
+
+    public void UndoDownvoteQuestion(string questionId)
+    {
+        var question = GetQuestion(questionId);
+        question.Downvotes--;
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
@@ -165,11 +179,27 @@ public class ForumService : IForumService
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
+    public void UndoUpvoteAnswer(string questionId, string answerId)
+    {
+        var question = GetQuestion(questionId);
+        var answer = question.Answers.Find(answer => answer.Id == answerId);
+        if (answer != null) answer.Upvotes--;
+        _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
+    }
+
     public void DownvoteAnswer(string questionId, string answerId)
     {
         var question = GetQuestion(questionId);
         var answer = question.Answers.Find(answer => answer.Id == answerId);
         if (answer != null) answer.Downvotes++;
+        _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
+    }
+
+    public void UndoDownvoteAnswer(string questionId, string answerId)
+    {
+        var question = GetQuestion(questionId);
+        var answer = question.Answers.Find(answer => answer.Id == answerId);
+        if (answer != null) answer.Downvotes--;
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 

@@ -124,11 +124,18 @@ public class ForumController : ControllerBase
     [HttpPut("questions/upvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult UpvoteQuestion(string questionId)
+    public ActionResult UpvoteQuestion(string questionId, bool undo = false)
     {
         try
         {
-            _forumService.UpvoteQuestion(questionId);
+            if (undo)
+            {
+                _forumService.UndoUpvoteQuestion(questionId);
+            } else
+            {
+                _forumService.UpvoteQuestion(questionId);
+            }
+
             return Ok();
         } catch (Exception e)
         {
@@ -139,11 +146,42 @@ public class ForumController : ControllerBase
     [HttpPut("questions/downvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult DownvoteQuestion(string questionId)
+    public ActionResult DownvoteQuestion(string questionId, bool undo = false)
     {
         try
         {
-            _forumService.DownvoteQuestion(questionId);
+            if (undo)
+            {
+                _forumService.UndoDownvoteQuestion(questionId);
+            } else
+            {
+                _forumService.DownvoteQuestion(questionId);
+            }
+
+            return Ok();
+        } catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPut("questions/switchvote")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult SwitchVote(string questionId, bool upvote)
+    {
+        try
+        {
+            if (upvote)
+            {
+                _forumService.UpvoteQuestion(questionId);
+                _forumService.UndoDownvoteQuestion(questionId);
+            } else
+            {
+                _forumService.DownvoteQuestion(questionId);
+                _forumService.UndoUpvoteQuestion(questionId);
+            }
+
             return Ok();
         } catch (Exception e)
         {
@@ -184,11 +222,18 @@ public class ForumController : ControllerBase
     [HttpPut("answers/upvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult UpvoteAnswer(string questionId, string answerId)
+    public ActionResult UpvoteAnswer(string questionId, string answerId, bool undo = false)
     {
         try
         {
-            _forumService.UpvoteAnswer(questionId, answerId);
+            if (undo)
+            {
+                _forumService.UndoUpvoteAnswer(questionId, answerId);
+            } else
+            {
+                _forumService.UpvoteAnswer(questionId, answerId);
+            }
+
             return Ok();
         } catch (Exception e)
         {
@@ -199,11 +244,42 @@ public class ForumController : ControllerBase
     [HttpPut("answers/downvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult DownvoteAnswer(string questionId, string answerId)
+    public ActionResult DownvoteAnswer(string questionId, string answerId, bool undo = false)
     {
         try
         {
-            _forumService.DownvoteAnswer(questionId, answerId);
+            if (undo)
+            {
+                _forumService.UndoDownvoteAnswer(questionId, answerId);
+            } else
+            {
+                _forumService.DownvoteAnswer(questionId, answerId);
+            }
+
+            return Ok();
+        } catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPut("answers/switchvote")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult SwitchVote(string questionId, string answerId, bool upvote)
+    {
+        try
+        {
+            if (upvote)
+            {
+                _forumService.UpvoteAnswer(questionId, answerId);
+                _forumService.UndoDownvoteAnswer(questionId, answerId);
+            } else
+            {
+                _forumService.DownvoteAnswer(questionId, answerId);
+                _forumService.UndoUpvoteAnswer(questionId, answerId);
+            }
+
             return Ok();
         } catch (Exception e)
         {
