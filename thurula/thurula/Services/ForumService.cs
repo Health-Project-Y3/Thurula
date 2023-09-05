@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using System.Text.RegularExpressions;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using thurula.Models;
 
@@ -95,10 +96,9 @@ public class ForumService : IForumService
     {
         var skip = (page - 1) * pageSize;
 
-        // Define a filter to search for questions containing the query string in the Question or Description fields
-        var filter = Builders<ForumQuestion>.Filter.Where(q =>
-            q.Visible && (q.Question.Contains(query) || q.Description.Contains(query))
-        );
+        // Define a filter to search for questions containing the query string in the Question, Description or Keywords fields
+        var filter = Builders<ForumQuestion>.Filter.Regex(q => q.Question, new BsonRegularExpression(query, "i"))
+                     | Builders<ForumQuestion>.Filter.Regex(q => q.Description, new BsonRegularExpression(query, "i"));
 
         // Sort by date (or any other sorting criteria you prefer)
         var sort = Builders<ForumQuestion>.Sort.Descending(q => q.Date);
@@ -113,6 +113,7 @@ public class ForumService : IForumService
 
         return questions;
     }
+
 
     public ForumQuestion AddQuestion(ForumQuestion question)
     {
