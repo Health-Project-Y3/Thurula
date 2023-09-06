@@ -78,7 +78,7 @@ public class ForumController : ControllerBase
     [HttpGet("questions/keywords")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ForumQuestion>))]
     public ActionResult<IEnumerable<ForumQuestion>> GetQuestionsByKeywords(int page, int pageSize,
-        params string[] keywords)
+        [FromQuery] string[] keywords)
     {
         return Ok(_forumService.GetQuestionsByKeywords(keywords.ToList(), page, pageSize));
     }
