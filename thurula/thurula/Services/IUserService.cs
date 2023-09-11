@@ -5,7 +5,7 @@ namespace thurula.Services;
 public interface IUserService
 {
     string GetMyName();
-    
+
     List<User> Get();
     User Create(User user);
     void Remove(User userIn);
@@ -14,4 +14,8 @@ public interface IUserService
     List<BabyNames> GetFavouriteNames(string id);
     void AddFavouriteName(string id, string name);
     void RemoveFavouriteName(string id, string name);
+    void MarkVaccineAppointment(string userId, string vaccineId, bool mark);
+     List<VaccineAppointments> GetDueVaccines(string userId);
+     List<VaccineAppointments> GetCompletedVaccines(string userId);
+
 }

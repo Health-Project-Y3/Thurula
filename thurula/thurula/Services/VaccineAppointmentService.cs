@@ -48,4 +48,20 @@ public class VaccineAppointmentService : IVaccineAppointmentService
 
         return ids;
     }
+
+    /// <summary> Gets all the ids of all vaccine appointments of mothers </summary>
+    public HashSet<string> GetAllMotherVaccineIds()
+    {
+        var vaccines = _vaccineAppointments
+            .Find(doc => doc.UserType == "mother")
+            .ToList();
+
+        var ids = new HashSet<string>();
+        foreach (var vaccine in vaccines)
+        {
+            ids.Add(vaccine.Id);
+        }
+
+        return ids;
+    }
 }

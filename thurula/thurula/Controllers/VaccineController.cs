@@ -90,4 +90,61 @@ public class VaccineController : ControllerBase
             BadRequest(ex.Message);
         }
     }
+
+    [HttpGet("mom/due/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<IEnumerable<VaccineAppointments>> GetDueMomVaccines(string userId)
+    {
+        try
+        {
+            var vaccines = _userService.GetDueVaccines(userId);
+            return Ok(vaccines);
+        } catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("mom/completed/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
+    public ActionResult<IEnumerable<VaccineAppointments>> GetCompletedMomVaccines(string userId)
+    {
+        try
+        {
+            var vaccines = _userService.GetCompletedVaccines(userId);
+            return Ok(vaccines);
+        } catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("mom/complete/{userId}/{vaccineId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public void CompleteMomVaccine(string userId, string vaccineId)
+    {
+        try
+        {
+            _userService.MarkVaccineAppointment(userId, vaccineId, true);
+        } catch (Exception ex)
+        {
+            BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("mom/undo/{userId}/{vaccineId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public void UndoMomVaccine(string userId, string vaccineId)
+    {
+        try
+        {
+            _userService.MarkVaccineAppointment(userId, vaccineId, false);
+        } catch (Exception ex)
+        {
+            BadRequest(ex.Message);
+        }
+    }
 }

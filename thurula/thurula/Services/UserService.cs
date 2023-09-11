@@ -8,12 +8,14 @@ public class UserService : IUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMongoCollection<User> _users;
+    private readonly IVaccineAppointmentService _vaccineAppointmentService;
     private readonly IBabyNameService _babyNames;
 
-    public UserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client, IBabyNameService babyNames)
+    public UserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client, IBabyNameService babyNames, IVaccineAppointmentService vaccineAppointmentService)
     {
         _httpContextAccessor = httpContextAccessor;
         _babyNames = babyNames;
+        _vaccineAppointmentService = vaccineAppointmentService;
         var database = client.GetDatabase(settings.DatabaseName);
         _users = database.GetCollection<User>("users");
     }
@@ -91,5 +93,53 @@ public class UserService : IUserService
         }
         user.FavouriteNames.Remove(nameId);
         Update(id, user);
+    }
+
+    /// <summary> Marks a vaccine appointment as completed or not completed </summary>
+    /// <param name="userId"> The id of the user </param> <param name="vaccineId"> The id of the vaccine </param> <param name="mark">true to mark as completed, else false</param>
+    public void MarkVaccineAppointment(string userId, string vaccineId, bool mark)
+    {
+        var user = Get(userId);
+        if (user == null)
+            throw new Exception("User not found");
+
+        var vaccine = _vaccineAppointmentService.Get(vaccineId);
+        if (vaccine == null)
+            throw new Exception("Vaccine not found");
+        else if (mark)
+        {
+            user.CompletedVaccines.Add(vaccineId);
+            user.DueVaccines.Remove(vaccineId);
+        } else
+        {
+            user.CompletedVaccines.Remove(vaccineId);
+            user.DueVaccines.Add(vaccineId);
+        }
+
+        Update(userId, user);
+    }
+
+    public List<VaccineAppointments> GetDueVaccines(string userId)
+    {
+        var user = Get(userId);
+        if (user == null)
+            throw new Exception("User not found");
+        var v =  _vaccineAppointmentService.GetVaccines(user.DueVaccines);
+
+        //calculate the days left for each appointment
+        foreach (var vaccine in v)
+        {
+            var bornFor = (int) (DateTime.Now - user.ConceptionDate).TotalDays;
+            vaccine.DaysFromBirth -= bornFor;
+        }
+        return v;
+    }
+
+    public List<VaccineAppointments> GetCompletedVaccines(string userId)
+    {
+        var user = Get(userId);
+        if (user == null)
+            throw new Exception("User not found");
+        return _vaccineAppointmentService.GetVaccines(user.CompletedVaccines);
     }
 }
