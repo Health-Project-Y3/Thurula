@@ -11,7 +11,8 @@ public class UserService : IUserService
     private readonly IVaccineAppointmentService _vaccineAppointmentService;
     private readonly IBabyNameService _babyNames;
 
-    public UserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client, IBabyNameService babyNames, IVaccineAppointmentService vaccineAppointmentService)
+    public UserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client,
+        IBabyNameService babyNames, IVaccineAppointmentService vaccineAppointmentService)
     {
         _httpContextAccessor = httpContextAccessor;
         _babyNames = babyNames;
@@ -26,14 +27,17 @@ public class UserService : IUserService
         var result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         return result ?? "No user found";
     }
-    
+
     public List<User> Get() =>
         _users.Find(user => true).ToList();
+
     public User Create(User user)
     {
+        user.DueVaccines = _vaccineAppointmentService.GetAllMotherVaccineIds();
         _users.InsertOne(user);
         return user;
     }
+
     public void Remove(User userIn) =>
         _users.DeleteOne(user => user.Id == userIn.Id);
 
@@ -44,6 +48,7 @@ public class UserService : IUserService
         {
             throw new Exception("User not found.");
         }
+
         return user;
     }
 
@@ -59,6 +64,7 @@ public class UserService : IUserService
         {
             throw new Exception("User not found.");
         }
+
         var favouriteNames = user.FavouriteNames;
         var babyNames = _babyNames.Get(favouriteNames);
 
@@ -72,10 +78,12 @@ public class UserService : IUserService
         {
             throw new Exception("User not found.");
         }
+
         if (user.FavouriteNames.Contains(nameId))
         {
             throw new Exception("Name already in favourites.");
         }
+
         user.FavouriteNames.Add(nameId);
         Update(id, user);
     }
@@ -87,10 +95,12 @@ public class UserService : IUserService
         {
             throw new Exception("User not found.");
         }
+
         if (!user.FavouriteNames.Contains(nameId))
         {
             throw new Exception("Name not in favourites.");
         }
+
         user.FavouriteNames.Remove(nameId);
         Update(id, user);
     }
@@ -124,14 +134,15 @@ public class UserService : IUserService
         var user = Get(userId);
         if (user == null)
             throw new Exception("User not found");
-        var v =  _vaccineAppointmentService.GetVaccines(user.DueVaccines);
+        var v = _vaccineAppointmentService.GetVaccines(user.DueVaccines);
 
         //calculate the days left for each appointment
         foreach (var vaccine in v)
         {
-            var bornFor = (int) (DateTime.Now - user.ConceptionDate).TotalDays;
+            var bornFor = (int)(DateTime.Now - user.ConceptionDate).TotalDays;
             vaccine.DaysFromBirth -= bornFor;
         }
+
         return v;
     }
 
