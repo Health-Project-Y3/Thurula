@@ -33,10 +33,13 @@ public class VaccineAppointmentService : IVaccineAppointmentService
         return vaccines;
     }
 
-    /// <summary> Gets all the ids of all vaccine appointments </summary>
-    public HashSet<string> GetAllIds()
+    /// <summary> Gets all the ids of all vaccine appointments of babies </summary>
+    public HashSet<string> GetAllBabyVaccineIds()
     {
-        var vaccines = _vaccineAppointments.Find(v => true).ToList();
+        var vaccines = _vaccineAppointments
+            .Find(doc => doc.UserType == "baby")
+            .ToList();
+
         var ids = new HashSet<string>();
         foreach (var vaccine in vaccines)
         {

@@ -15,7 +15,10 @@ public class VaccineAppointments
     [BsonElement("description")]
     public string Description { get; set; } = string.Empty;
 
+    //When concerning mothers it should be days from conception
     [BsonElement("daysfrombirth")]
     public int DaysFromBirth { get; set; } = 0;
+
+    [BsonElement("user_type")] public string UserType = string.Empty;
 
 }
