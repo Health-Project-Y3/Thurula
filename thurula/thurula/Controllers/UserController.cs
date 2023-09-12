@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using thurula.Models;
 using thurula.Services;
@@ -9,17 +10,17 @@ namespace thurula.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly IAuthUserService _authUserService;
+    private readonly IUserService _userService;
 
-    public UserController(IAuthUserService authUserService)
+    public UserController(IUserService userService)
     {
-        _authUserService = authUserService;
+        _userService = userService;
     }
-    
+
     [HttpGet, Authorize]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
     public ActionResult<IEnumerable<User>> Get() =>
-        Ok(_authUserService.Get());
+        Ok(_userService.Get());
 
     [HttpGet("{id}", Name = "GetUser")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
@@ -31,32 +32,31 @@ public class UserController : ControllerBase
         {
             return BadRequest();
         }
+
         try
         {
-            var user = _authUserService.Get(id);
+            var user = _userService.Get(id);
             return Ok(user);
-        }
-        catch (Exception)
+        } catch (Exception)
         {
             return NotFound();
         }
     }
-    
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(User))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public ActionResult<User> CreateUser([FromBody] User user)
     {
-        _authUserService.Create(user);
-        return CreatedAtRoute("GetUser", new {id = user.Id}, user);
+        _userService.Create(user);
+        return CreatedAtRoute("GetUser", new { id = user.Id }, user);
     }
-    
+
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    
     public IActionResult UpdateUser(string id, [FromBody] User user)
     {
         if (user == null)
@@ -74,10 +74,10 @@ public class UserController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        _authUserService.Update(id, user);
+        _userService.Update(id, user);
         return NoContent();
     }
-    
+
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -89,38 +89,40 @@ public class UserController : ControllerBase
             return BadRequest();
         }
 
-        var user = _authUserService.Get(id);
+        var user = _userService.Get(id);
         if (user == null)
         {
             return NotFound();
         }
 
-        _authUserService.Remove(user);
+        _userService.Remove(user);
         return NoContent();
     }
-    
+
     [HttpPatch("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    
-    public IActionResult PatchUser(string id, [FromBody] User user)
+    public IActionResult PatchUser(string id, [FromBody] JsonPatchDocument<User> patchDoc)
     {
+        if (patchDoc == null)
+        {
+            return BadRequest();
+        }
+
+        var user = _userService.Get(id);
         if (user == null)
         {
             return BadRequest();
         }
-        if (user.Id != id)
-        {
-            return BadRequest();
-        }
+
+        patchDoc.ApplyTo(user, ModelState);
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        _authUserService.Update(id, user);
+        _userService.Update(id, user);
         return NoContent();
     }
-    
 }

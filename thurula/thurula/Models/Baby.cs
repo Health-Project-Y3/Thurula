@@ -15,6 +15,8 @@ public class Baby
     [BsonElement("fname")]
     public string FirstName { get; set; } = string.Empty;
 
+    [BsonElement("gender")] public string Gender { get; set; } = string.Empty;
+
     [MaxLength(30)] [BsonElement("lname")] public string LastName { get; set; } = string.Empty;
 
     [BsonElement("birthdate")] public DateTime BirthDate { get; set; }
