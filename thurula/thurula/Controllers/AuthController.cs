@@ -1,4 +1,4 @@
-﻿﻿using thurula.Models;
+﻿using thurula.Models;
 using thurula.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,34 +17,42 @@ public class AuthController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly IAuthUserService _authUserService;
 
-        public AuthController(IConfiguration configuration, IAuthUserService authUserService)
-        {
-            _configuration = configuration;
-            _authUserService = authUserService;
-        }
+    public AuthController(IConfiguration configuration, IAuthUserService authUserService)
+    {
+        _configuration = configuration;
+        _authUserService = authUserService;
+    }
 
-        [HttpGet, Authorize]
-        public ActionResult<string> GetMyName()
-        {
-            return Ok(_authUserService.GetMyName());
-        }
+    [HttpGet, Authorize]
+    public ActionResult<string> GetMyName()
+    {
+        return Ok(_authUserService.GetMyName());
+    }
 
-        [HttpPost("register")]
-        public ActionResult<User> Register(UserDto request)
-        {
-            string passwordHash
-                = BCrypt.Net.BCrypt.HashPassword(request.Password);
+    [HttpPost("register")]
+    public ActionResult<User> Register(UserDto request)
+    {
+        string passwordHash
+            = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
         user.Username = request.Username;
         user.PasswordHash = passwordHash;
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.Email = request.Email;
-        
-        _authUserService.Create(user);
-
-            return Ok(user);
+        try
+        {
+            _authUserService.Create(user);
+        } catch (InvalidOperationException)
+        {
+            return Conflict("A user with the same username already exists.");
+        } catch (Exception e)
+        {
+            return BadRequest(e);
         }
+
+        return Ok(user);
+    }
 
     [HttpPost("login")]
     public ActionResult<User> Login(UserDto request)
@@ -55,7 +63,7 @@ public class AuthController : ControllerBase
         {
             return BadRequest("User not found.");
         }
-        
+
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
             return BadRequest("Wrong password.");
@@ -66,13 +74,14 @@ public class AuthController : ControllerBase
         return Ok(token);
     }
 
-        private string CreateToken(User user)
+    private string CreateToken(User user)
+    {
+        List<Claim> claims = new List<Claim>
         {
-            List<Claim> claims = new List<Claim> {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Role, "User"),
-            };
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Role, "User"),
+        };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
             _configuration.GetSection("AppSettings:Token").Value!));

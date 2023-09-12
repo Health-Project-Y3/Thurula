@@ -27,6 +27,13 @@ public class AuthUserService : IAuthUserService
         _users.Find(user => true).ToList();
     public User Create(User user)
     {
+        // Check if a user with the same username already exists
+        var existingUser = _users.Find(u => u.Username == user.Username).FirstOrDefault();
+
+        if (existingUser != null)
+        {
+            throw new InvalidOperationException("A user with the same username already exists.");
+        }
         _users.InsertOne(user);
         return user;
     }
