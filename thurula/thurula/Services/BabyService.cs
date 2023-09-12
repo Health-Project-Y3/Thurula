@@ -24,7 +24,7 @@ public class BabyService : IBabyService
 
     public Baby Create(Baby baby)
     {
-        baby.DueVaccines = _vaccineAppointmentService.GetAllIds();
+        baby.DueVaccines = _vaccineAppointmentService.GetAllBabyVaccineIds();
         _babies.InsertOne(baby);
         return baby;
     }

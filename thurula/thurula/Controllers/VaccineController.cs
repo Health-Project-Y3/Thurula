@@ -10,11 +10,13 @@ public class VaccineController : ControllerBase
 {
     private readonly IVaccineAppointmentService _vaccineAppointmentService;
     private readonly IBabyService _babyService;
+    private readonly IUserService _userService;
 
-    public VaccineController(IVaccineAppointmentService vaccineAppointmentService, IBabyService babyService)
+    public VaccineController(IVaccineAppointmentService vaccineAppointmentService, IBabyService babyService, IUserService userService)
     {
         _vaccineAppointmentService = vaccineAppointmentService;
         _babyService = babyService;
+        _userService = userService;
     }
 
     [HttpGet("{id}")]
@@ -32,10 +34,10 @@ public class VaccineController : ControllerBase
         }
     }
 
-    [HttpGet("due/{babyId}")]
+    [HttpGet("baby/due/{babyId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult<IEnumerable<VaccineAppointments>> GetDueVaccines(string babyId)
+    public ActionResult<IEnumerable<VaccineAppointments>> GetDueBabyVaccines(string babyId)
     {
         try
         {
@@ -47,9 +49,9 @@ public class VaccineController : ControllerBase
         }
     }
 
-    [HttpGet("completed/{babyId}")]
+    [HttpGet("baby/completed/{babyId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
-    public ActionResult<IEnumerable<VaccineAppointments>> GetCompletedVaccines(string babyId)
+    public ActionResult<IEnumerable<VaccineAppointments>> GetCompletedBabyVaccines(string babyId)
     {
         try
         {
@@ -61,10 +63,10 @@ public class VaccineController : ControllerBase
         }
     }
 
-    [HttpPut("complete/{babyId}/{vaccineId}")]
+    [HttpPut("baby/complete/{babyId}/{vaccineId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public void CompleteVaccine(string babyId, string vaccineId)
+    public void CompleteBabyVaccine(string babyId, string vaccineId)
     {
         try
         {
@@ -75,14 +77,71 @@ public class VaccineController : ControllerBase
         }
     }
 
-    [HttpPut("undo/{babyId}/{vaccineId}")]
+    [HttpPut("baby/undo/{babyId}/{vaccineId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public void UndoVaccine(string babyId, string vaccineId)
+    public void UndoBabyVaccine(string babyId, string vaccineId)
     {
         try
         {
             _babyService.MarkVaccineAppointment(babyId, vaccineId, false);
+        } catch (Exception ex)
+        {
+            BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("mom/due/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public ActionResult<IEnumerable<VaccineAppointments>> GetDueMomVaccines(string userId)
+    {
+        try
+        {
+            var vaccines = _userService.GetDueVaccines(userId);
+            return Ok(vaccines);
+        } catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("mom/completed/{userId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
+    public ActionResult<IEnumerable<VaccineAppointments>> GetCompletedMomVaccines(string userId)
+    {
+        try
+        {
+            var vaccines = _userService.GetCompletedVaccines(userId);
+            return Ok(vaccines);
+        } catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("mom/complete/{userId}/{vaccineId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public void CompleteMomVaccine(string userId, string vaccineId)
+    {
+        try
+        {
+            _userService.MarkVaccineAppointment(userId, vaccineId, true);
+        } catch (Exception ex)
+        {
+            BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("mom/undo/{userId}/{vaccineId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VaccineAppointments>))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public void UndoMomVaccine(string userId, string vaccineId)
+    {
+        try
+        {
+            _userService.MarkVaccineAppointment(userId, vaccineId, false);
         } catch (Exception ex)
         {
             BadRequest(ex.Message);

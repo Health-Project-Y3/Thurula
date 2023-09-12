@@ -8,10 +8,12 @@ public class AuthUserService : IAuthUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IMongoCollection<User> _users;
+    private readonly IVaccineAppointmentService _vaccineAppointmentService;
 
-    public AuthUserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client)
+    public AuthUserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client, IVaccineAppointmentService vaccineAppointmentService)
     {
         _httpContextAccessor = httpContextAccessor;
+        _vaccineAppointmentService = vaccineAppointmentService;
         var database = client.GetDatabase(settings.DatabaseName);
         _users = database.GetCollection<User>("users");
     }
@@ -34,6 +36,7 @@ public class AuthUserService : IAuthUserService
         {
             throw new InvalidOperationException("A user with the same username already exists.");
         }
+        user.DueVaccines = _vaccineAppointmentService.GetAllMotherVaccineIds();
         _users.InsertOne(user);
         return user;
     }
