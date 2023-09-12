@@ -52,9 +52,9 @@ public class BabyController : ControllerBase
         {
             _babyService.Create(baby);
             return CreatedAtRoute("GetBaby", new { id = baby.Id }, baby);
-        } catch (Exception)
+        } catch (Exception e)
         {
-            return BadRequest();
+            return BadRequest(e);
         }
     }
 
