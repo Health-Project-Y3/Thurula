@@ -61,12 +61,12 @@ public class UserController : ControllerBase
     {
         if (user == null)
         {
-            return BadRequest();
+            return BadRequest("No User Found");
         }
 
         if (user.Id != id)
         {
-            return BadRequest();
+            return BadRequest("User Ids do not match");
         }
 
         if (!ModelState.IsValid)

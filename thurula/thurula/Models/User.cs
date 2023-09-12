@@ -13,7 +13,7 @@ public class User
     [BsonElement("password")] public string PasswordHash { get; set; } = string.Empty;
     [BsonElement("fname")] public string FirstName { get; set; } = string.Empty;
     [BsonElement("lname")] public string LastName { get; set; } = string.Empty;
-    [Required] [BsonElement("gender")] public string Gender { get; set; } = string.Empty;
+    [BsonElement("gender")] public string Gender { get; set; } = string.Empty;
     [BsonElement("email")] public string Email { get; set; } = string.Empty;
     [BsonElement("phone")] public string Phone { get; set; } = string.Empty;
     [BsonElement("pregnant")] public bool Pregnant { get; set; } = false;
