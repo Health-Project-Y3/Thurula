@@ -76,6 +76,18 @@ public class AuthController : ControllerBase
         return Ok(token);
     }
 
+    [HttpGet("username/{username}")]
+    public ActionResult<User> GetUser(string username)
+    {
+        var user = _authUserService.GetByUsername(username);
+        if (user == null)
+        {
+            return BadRequest("User not found.");
+        }
+
+        return Ok(user);
+    }
+
     private string CreateToken(User user)
     {
         List<Claim> claims = new List<Claim>
