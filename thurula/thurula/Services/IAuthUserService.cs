@@ -10,5 +10,6 @@ public interface IAuthUserService
     User Create(User user);
     void Remove(User userIn);
     User Get(string id);
+    User GetByUsername(string username);
     void Update(string id, User user);
 }

@@ -53,6 +53,16 @@ public class AuthUserService : IAuthUserService
         return user;
     }
 
+    public User GetByUsername(string username)
+    {
+        var user = _users.Find(user => user.Username == username).FirstOrDefault();
+        if (user == null)
+        {
+            throw new Exception("User not found.");
+        }
+        return user;
+    }
+
     public void Update(string id, User user)
     {
         _users.ReplaceOne(user => user.Id == id, user);
