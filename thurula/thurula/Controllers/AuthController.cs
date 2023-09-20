@@ -41,6 +41,7 @@ public class AuthController : ControllerBase
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.Email = request.Email;
+        user.Gender = "female";
         try
         {
             _authUserService.Create(user);
