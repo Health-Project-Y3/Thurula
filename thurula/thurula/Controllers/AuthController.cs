@@ -35,11 +35,13 @@ public class AuthController : ControllerBase
         string passwordHash
             = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
+        user = new User();
         user.Username = request.Username;
         user.PasswordHash = passwordHash;
         user.FirstName = request.FirstName;
         user.LastName = request.LastName;
         user.Email = request.Email;
+        user.Gender = "female";
         try
         {
             _authUserService.Create(user);
@@ -72,6 +74,18 @@ public class AuthController : ControllerBase
         string token = CreateToken(user);
 
         return Ok(token);
+    }
+
+    [HttpGet("username/{username}")]
+    public ActionResult<User> GetUser(string username)
+    {
+        var user = _authUserService.GetByUsername(username);
+        if (user == null)
+        {
+            return BadRequest("User not found.");
+        }
+
+        return Ok(user);
     }
 
     private string CreateToken(User user)
