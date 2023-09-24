@@ -10,13 +10,15 @@ public class UserService : IUserService
     private readonly IMongoCollection<User> _users;
     private readonly IVaccineAppointmentService _vaccineAppointmentService;
     private readonly IBabyNameService _babyNames;
+    private readonly IAuthUserService _authUserService;
 
     public UserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client,
-        IBabyNameService babyNames, IVaccineAppointmentService vaccineAppointmentService)
+        IBabyNameService babyNames, IVaccineAppointmentService vaccineAppointmentService, IAuthUserService authUserService)
     {
         _httpContextAccessor = httpContextAccessor;
         _babyNames = babyNames;
         _vaccineAppointmentService = vaccineAppointmentService;
+        _authUserService = authUserService;
         var database = client.GetDatabase(settings.DatabaseName);
         _users = database.GetCollection<User>("users");
     }
@@ -28,11 +30,32 @@ public class UserService : IUserService
         return result ?? "No user found";
     }
 
+    public User GetByUsername(string username)
+    {
+        var user = _users.Find(user => user.Username == username).FirstOrDefault();
+        if (!_authUserService.CheckAuth(userId: user.Id)) throw new UnauthorizedAccessException();
+        if (user == null)
+        {
+            throw new Exception("User not found.");
+        }
+
+        return user;
+    }
+
     public List<User> Get() =>
         _users.Find(user => true).ToList();
 
     public User Create(User user)
     {
+        // Check if a user with the same username already exists
+        var existingUser = _users.Find(u => u.Username == user.Username).FirstOrDefault();
+
+        if (existingUser != null)
+        {
+            throw new InvalidOperationException("A user with the same username already exists.");
+        }
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
+        user.Gender = "female";
         user.DueVaccines = _vaccineAppointmentService.GetAllMotherVaccineIds();
         _users.InsertOne(user);
         return user;

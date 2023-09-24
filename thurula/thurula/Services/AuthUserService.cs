@@ -1,4 +1,7 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using thurula.Models;
 
@@ -7,15 +10,18 @@ namespace thurula.Services;
 public class AuthUserService : IAuthUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IMongoCollection<Baby> _babies;
     private readonly IMongoCollection<User> _users;
-    private readonly IVaccineAppointmentService _vaccineAppointmentService;
+    private readonly IConfiguration _configuration;
 
-    public AuthUserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client, IVaccineAppointmentService vaccineAppointmentService)
+    public AuthUserService(IHttpContextAccessor httpContextAccessor, IAtlasDbSettings settings, IMongoClient client,
+        IConfiguration configuration)
     {
         _httpContextAccessor = httpContextAccessor;
-        _vaccineAppointmentService = vaccineAppointmentService;
+        _configuration = configuration;
         var database = client.GetDatabase(settings.DatabaseName);
         _users = database.GetCollection<User>("users");
+        _babies = database.GetCollection<Baby>("babies");
     }
 
     public string GetMyName()
@@ -24,47 +30,71 @@ public class AuthUserService : IAuthUserService
         var result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         return result ?? "No user found";
     }
-    
-    public List<User> Get() =>
-        _users.Find(user => true).ToList();
-    public User Create(User user)
-    {
-        // Check if a user with the same username already exists
-        var existingUser = _users.Find(u => u.Username == user.Username).FirstOrDefault();
 
-        if (existingUser != null)
+    public bool CheckAuth(string babyId = "", string userId = "")
+    {
+        if (_httpContextAccessor.HttpContext is null) return false;
+        //Allow admins to do anything
+        var role = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+        if (role == "Admin") return true;
+        // Get the user id from the token
+        var tokenUserId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (tokenUserId == null) return false;
+        // Check if the user is the owner of the baby
+        if (babyId != "")
         {
-            throw new InvalidOperationException("A user with the same username already exists.");
+            var baby = _babies.Find(baby => baby.Id == babyId).FirstOrDefault();
+            return baby != null && baby.Owners.Contains(tokenUserId);
         }
-        user.DueVaccines = _vaccineAppointmentService.GetAllMotherVaccineIds();
-        _users.InsertOne(user);
-        return user;
-    }
-    public void Remove(User userIn) =>
-        _users.DeleteOne(user => user.Id == userIn.Id);
 
-    public User Get(string id)
+        // Check if the user is the owner of the token
+        if (userId != "")
+        {
+            return tokenUserId == userId;
+        }
+
+        return false;
+    }
+
+    public string CreateToken(User user)
     {
-        var user = _users.Find(user => user.Id == id).FirstOrDefault();
+        List<Claim> claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            user.Username == "admin" ? new Claim(ClaimTypes.Role, "Admin") : new Claim(ClaimTypes.Role, "User")
+        };
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            _configuration.GetSection("AppSettings:Token").Value!));
+
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+        var token = new JwtSecurityToken(
+            claims: claims,
+            expires: DateTime.Now.AddDays(1),
+            signingCredentials: creds
+        );
+
+        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+        return jwt;
+    }
+
+    public string Login(UserDto userDto)
+    {
+        var user = _users.Find(user => user.Username == userDto.Username).FirstOrDefault();
         if (user == null)
         {
             throw new Exception("User not found.");
         }
-        return user;
-    }
 
-    public User GetByUsername(string username)
-    {
-        var user = _users.Find(user => user.Username == username).FirstOrDefault();
-        if (user == null)
+        if (!BCrypt.Net.BCrypt.Verify(userDto.Password, user.PasswordHash))
         {
-            throw new Exception("User not found.");
+            throw new Exception("Wrong password.");
         }
-        return user;
-    }
 
-    public void Update(string id, User user)
-    {
-        _users.ReplaceOne(user => user.Id == id, user);
+        var token = CreateToken(user);
+
+        return token;
     }
 }
