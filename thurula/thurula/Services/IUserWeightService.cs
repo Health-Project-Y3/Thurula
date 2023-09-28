@@ -6,8 +6,8 @@ public interface IUserWeightService
 {
     List<UserWeight> Get();
     UserWeight Get(string id);
-    UserWeight Create(UserWeight uex);
+    UserWeight Create(UserWeight uwr);
     List<UserWeight> GetByUser(string userId, DateTime? start, DateTime? end);
-    void Update(string id, UserWeight uex);
+    void Update(string id, UserWeight uwr);
     void Remove(string id);
 }
