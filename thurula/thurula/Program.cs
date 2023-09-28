@@ -68,6 +68,7 @@ builder.Services.AddScoped<IForumService, ForumService>();
 builder.Services.AddScoped<IUserExerciseService, UserExerciseService>();
 builder.Services.AddScoped<IUserWeightService, UserWeightService>();
 builder.Services.AddScoped<IUserDrinkingService, UserDrinkingService>();
+builder.Services.AddScoped<IUserBpService, UserBpService>();
 
 
 builder.Services.AddSignalR(hubOptions => {
