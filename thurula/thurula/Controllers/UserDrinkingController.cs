@@ -64,6 +64,12 @@ public class UserDrinkingController : ControllerBase
             {
                 endDateTime = parsedEndDate;
             }
+            //if startDate and endDate are both empty, then return all records for the specified user
+            if (startDate == "" && endDate == "")
+            {
+                startDateTime = DateTime.MinValue;
+                endDateTime = DateTime.MaxValue;
+            }
 
             // Call the GetByUser function with the provided parameters
             List<UserDrinking> exerciseRecords = _userDrinkingService.GetByUser(id, startDateTime, endDateTime);
