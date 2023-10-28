@@ -12,5 +12,5 @@ public class UserBp
     public string Id { get; set; } = string.Empty;
     [BsonElement("user_id")] public string UserId { get; set; } = string.Empty;
     [BsonElement("date")] public DateTime Date { get; set; }
-    [BsonElement("bp")] public double BloodPressure { get; set; } = 0;
+    [BsonElement("bp")] public string BloodPressure { get; set; } = string.Empty;
 }
