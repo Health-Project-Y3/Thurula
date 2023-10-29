@@ -66,6 +66,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBabyNameService, BabyNameService>();
 builder.Services.AddScoped<IForumService, ForumService>();
 builder.Services.AddScoped<IUserExerciseService, UserExerciseService>();
+builder.Services.AddScoped<IEyeCheckupService, EyeCheckupService>();
 
 
 builder.Services.AddSignalR(hubOptions => {
