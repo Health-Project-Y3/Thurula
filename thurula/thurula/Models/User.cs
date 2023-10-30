@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace thurula.Models;
-
+[BsonIgnoreExtraElements]
 public class User
 {
     [BsonId]
