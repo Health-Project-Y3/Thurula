@@ -33,6 +33,11 @@ public class Checklist
 
     [Required]
     [MaxLength(500)]
+    [BsonElement("panel")]
+    public string Panel { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(500)]
     [BsonElement("instructions")]
     public List<Instruction> Instructions { get; set; }
     // public array Instructions { get; set; } = array.Empty;
