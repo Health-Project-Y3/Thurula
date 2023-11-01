@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Security.Claims;
+using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using thurula.Models;
@@ -8,9 +10,11 @@ namespace thurula.Services;
 public class ForumService : IForumService
 {
     private readonly IMongoCollection<ForumQuestion> _forumQuestions;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public ForumService(IAtlasDbSettings settings, IMongoClient client)
+    public ForumService(IAtlasDbSettings settings, IMongoClient client, IHttpContextAccessor httpContextAccessor)
     {
+        _httpContextAccessor = httpContextAccessor;
         var database = client.GetDatabase(settings.DatabaseName);
         _forumQuestions = database.GetCollection<ForumQuestion>("forum_messages");
     }
@@ -114,7 +118,7 @@ public class ForumService : IForumService
         return questions;
     }
 
-
+    [Authorize]
     public ForumQuestion AddQuestion(ForumQuestion question)
     {
         if (question.Description == "") throw new Exception("Description cannot be empty");
@@ -123,11 +127,13 @@ public class ForumService : IForumService
         return question;
     }
 
+    [Authorize]
     public void DeleteQuestion(string id)
     {
         _forumQuestions.DeleteOne(question => question.Id == id);
     }
 
+    [Authorize]
     public ForumAnswer AddAnswer(string questionId, ForumAnswer answer)
     {
         answer.Id = ObjectId.GenerateNewId().ToString();
@@ -139,6 +145,7 @@ public class ForumService : IForumService
         return answer;
     }
 
+    [Authorize]
     public void DeleteAnswer(string questionId, string answerId)
     {
         var question = GetQuestion(questionId);
@@ -146,66 +153,96 @@ public class ForumService : IForumService
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
+    [Authorize]
     public void UpvoteQuestion(string questionId)
     {
         var question = GetQuestion(questionId);
         question.Upvotes++;
+        question.Upvoters.Add(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)??"");
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
+    [Authorize]
     public void UndoUpvoteQuestion(string questionId)
     {
         var question = GetQuestion(questionId);
         question.Upvotes--;
+        question.Upvoters.Remove(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)??"");
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
+    [Authorize]
     public void DownvoteQuestion(string questionId)
     {
         var question = GetQuestion(questionId);
         question.Downvotes++;
+        question.Downvoters.Add(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)??"");
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
+    [Authorize]
     public void UndoDownvoteQuestion(string questionId)
     {
         var question = GetQuestion(questionId);
         question.Downvotes--;
+        question.Downvoters.Remove(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)??"");
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
+    [Authorize]
     public void UpvoteAnswer(string questionId, string answerId)
     {
         var question = GetQuestion(questionId);
         var answer = question.Answers.Find(answer => answer.Id == answerId);
-        if (answer != null) answer.Upvotes++;
+        if (answer != null)
+        {
+            answer.Upvotes++;
+            answer.Upvoters.Add(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "");
+        }
+
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
+    [Authorize]
     public void UndoUpvoteAnswer(string questionId, string answerId)
     {
         var question = GetQuestion(questionId);
         var answer = question.Answers.Find(answer => answer.Id == answerId);
-        if (answer != null) answer.Upvotes--;
+        if (answer != null)
+        {
+            answer.Upvotes--;
+            answer.Upvoters.Remove(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "");
+        }
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
+    [Authorize]
     public void DownvoteAnswer(string questionId, string answerId)
     {
         var question = GetQuestion(questionId);
         var answer = question.Answers.Find(answer => answer.Id == answerId);
-        if (answer != null) answer.Downvotes++;
+        if (answer != null)
+        {
+            answer.Downvotes++;
+            answer.Downvoters.Add(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "");
+        }
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
+    [Authorize]
     public void UndoDownvoteAnswer(string questionId, string answerId)
     {
         var question = GetQuestion(questionId);
         var answer = question.Answers.Find(answer => answer.Id == answerId);
-        if (answer != null) answer.Downvotes--;
+        if (answer != null)
+        {
+            answer.Downvotes--;
+            answer.Downvoters.Remove(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "");
+        }
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
     }
 
+    [Authorize]
     public void AcceptAnswer(string questionId, string answerId)
     {
         var question = GetQuestion(questionId);
