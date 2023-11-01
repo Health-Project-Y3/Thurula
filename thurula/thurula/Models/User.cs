@@ -23,4 +23,10 @@ public class User
     [BsonElement("favouriteNames")] public List<string> FavouriteNames { get; set; } = new();
     [BsonElement("completedvaccines")] public HashSet<string> CompletedVaccines { get; set; } = new HashSet<string>();
     [BsonElement("duevaccines")] public HashSet<string> DueVaccines { get; set; } = new HashSet<string>();
+    //in centimeters
+    [BsonElement("height")] public double Height { get; set; }
+    //in kilograms
+    [BsonElement("weight")] public double Weight { get; set; }
+    //in kilograms
+    [BsonElement("prepregnancy_weight")] public double PreWeight { get; set; }
 }
