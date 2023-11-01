@@ -36,6 +36,46 @@ public class ChecklistService: IChecklistService
         return _checklists.Find<Checklist>(checklist => checklist.Period == "Week2").ToList();
     }
 
+    public List<Checklist> GetAllWeek3()
+    {
+        List<Checklist>  check = _checklists.Find<Checklist>(checklist => checklist.Period == "Week3").ToList();
+        // Console.WriteLine(check);
+        check.ForEach(Console. WriteLine);
+        return _checklists.Find<Checklist>(checklist => checklist.Period == "Week3").ToList();
+    }
+
+    public List<Checklist> GetAllMonth1()
+    {
+        List<Checklist>  check = _checklists.Find<Checklist>(checklist => checklist.Period == "Month1").ToList();
+        // Console.WriteLine(check);
+        check.ForEach(Console. WriteLine);
+        return _checklists.Find<Checklist>(checklist => checklist.Period == "Month1").ToList();
+    }
+
+     public List<Checklist> GetAllWeek5()
+    {
+        List<Checklist>  check = _checklists.Find<Checklist>(checklist => checklist.Period == "Week5").ToList();
+        // Console.WriteLine(check);
+        check.ForEach(Console. WriteLine);
+        return _checklists.Find<Checklist>(checklist => checklist.Period == "Week5").ToList();
+    }
+
+     public List<Checklist> GetAllWeek6()
+    {
+        List<Checklist>  check = _checklists.Find<Checklist>(checklist => checklist.Period == "Week6").ToList();
+        // Console.WriteLine(check);
+        check.ForEach(Console. WriteLine);
+        return _checklists.Find<Checklist>(checklist => checklist.Period == "Week6").ToList();
+    }
+
+     public List<Checklist> GetAllWeek7()
+    {
+        List<Checklist>  check = _checklists.Find<Checklist>(checklist => checklist.Period == "Week7").ToList();
+        // Console.WriteLine(check);
+        check.ForEach(Console. WriteLine);
+        return _checklists.Find<Checklist>(checklist => checklist.Period == "Week7").ToList();
+    }
+
     public Checklist Create(Checklist checklist)
     {
         _checklists.InsertOne(checklist);

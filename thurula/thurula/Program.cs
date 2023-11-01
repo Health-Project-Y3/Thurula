@@ -70,6 +70,7 @@ builder.Services.AddScoped<IUserWeightService, UserWeightService>();
 builder.Services.AddScoped<IUserDrinkingService, UserDrinkingService>();
 builder.Services.AddScoped<IUserBpService, UserBpService>();
 builder.Services.AddScoped<IBmiService, BmiService>();
+builder.Services.AddScoped<IEyeCheckupService, EyeCheckupService>();
 
 
 builder.Services.AddSignalR(hubOptions => {
