@@ -5,11 +5,7 @@ namespace thurula.Services;
 public interface IAuthUserService
 {
     string GetMyName();
-    
-    List<User> Get();
-    User Create(User user);
-    void Remove(User userIn);
-    User Get(string id);
-    User GetByUsername(string username);
-    void Update(string id, User user);
+    bool CheckAuth(string babyId= "", string userId = "");
+    string CreateToken(User user);
+    string Login(UserDto user);
 }

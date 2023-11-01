@@ -6,6 +6,7 @@ using thurula.Services;
 
 namespace thurula.Controllers;
 
+[Authorize]
 [Route("api/baby")]
 [ApiController]
 public class BabyController : ControllerBase

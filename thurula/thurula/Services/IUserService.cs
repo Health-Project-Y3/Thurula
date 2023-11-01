@@ -7,6 +7,7 @@ public interface IUserService
     string GetMyName();
 
     List<User> Get();
+    User GetByUsername(string username);
     User Create(User user);
     void Remove(User userIn);
     User Get(string id);
