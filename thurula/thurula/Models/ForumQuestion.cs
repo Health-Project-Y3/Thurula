@@ -42,6 +42,12 @@ public class ForumQuestion
     [BsonElement("answers")]
     public List<ForumAnswer> Answers { get; set; } = new();
 
+    [BsonElement("upvoters")]
+    public List<string> Upvoters { get; set; } = new();
+
+    [BsonElement("downvoters")]
+    public List<string> Downvoters { get; set; } = new();
+
 }
 
 public class ForumAnswer
@@ -77,5 +83,11 @@ public class ForumAnswer
 
     [BsonElement("downvotes")]
     public int Downvotes { get; set; } = 0;
+
+    [BsonElement("upvoters")]
+    public List<string> Upvoters { get; set; } = new();
+
+    [BsonElement("downvoters")]
+    public List<string> Downvoters { get; set; } = new();
 
 }
