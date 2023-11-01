@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using thurula.Models;
 using thurula.Services;
 
 namespace thurula.Controllers;
 
+[Authorize]
 [Route("api/vaccines")]
 [ApiController]
 public class VaccineController : ControllerBase

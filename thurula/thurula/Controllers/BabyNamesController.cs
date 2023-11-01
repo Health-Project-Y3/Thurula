@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using thurula.Models;
 using thurula.Services;
 
@@ -60,6 +61,7 @@ public class BabyNamesController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("favourites/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BabyNames>))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -74,6 +76,7 @@ public class BabyNamesController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("favourites/add/{userid}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BabyNames>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -89,6 +92,7 @@ public class BabyNamesController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpDelete("favourites/remove/{userid}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BabyNames>))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

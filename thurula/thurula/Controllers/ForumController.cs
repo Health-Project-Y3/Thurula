@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using thurula.Hubs;
 using thurula.Models;
@@ -91,6 +92,7 @@ public class ForumController : ControllerBase
         return Ok(_forumService.GetQuestionsBetweenDates(start, end, page, pageSize));
     }
 
+    [Authorize]
     [HttpPost("questions")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -106,6 +108,7 @@ public class ForumController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpDelete("questions")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -121,6 +124,7 @@ public class ForumController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("questions/upvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -143,6 +147,7 @@ public class ForumController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("questions/downvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -165,6 +170,7 @@ public class ForumController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("questions/switchvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -189,6 +195,7 @@ public class ForumController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("answers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -203,6 +210,7 @@ public class ForumController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpDelete("answers")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -218,6 +226,7 @@ public class ForumController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("answers/upvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -240,6 +249,7 @@ public class ForumController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("answers/downvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -262,6 +272,7 @@ public class ForumController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("answers/switchvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -286,6 +297,7 @@ public class ForumController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("answers/accept")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

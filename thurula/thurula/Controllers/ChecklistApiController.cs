@@ -17,7 +17,7 @@ public class ChecklistApiController : ControllerBase
         _checklistService = checklistService;
     }
 
-    [HttpGet, Authorize]
+    [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Checklist>))]
     public ActionResult<IEnumerable<Checklist>> Get() =>
         Ok(_checklistService.Get());

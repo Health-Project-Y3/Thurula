@@ -22,6 +22,7 @@ public class UserController : ControllerBase
     public ActionResult<IEnumerable<User>> Get() =>
         Ok(_userService.Get());
 
+    [Authorize]
     [HttpGet("{id}", Name = "GetUser")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -53,6 +54,7 @@ public class UserController : ControllerBase
         return CreatedAtRoute("GetUser", new { id = user.Id }, user);
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -78,6 +80,7 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -99,6 +102,7 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    [Authorize]
     [HttpPatch("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

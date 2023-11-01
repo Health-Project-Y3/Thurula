@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using thurula.Models;
 using thurula.Services;
 
 namespace thurula.Controllers;
 
+[Authorize]
 [Route("api/feeding")]
 [ApiController]
 public class FeedingController : ControllerBase

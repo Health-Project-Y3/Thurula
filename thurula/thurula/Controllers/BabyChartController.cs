@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using thurula.Services;
 
 namespace thurula.Controllers;
@@ -24,6 +25,7 @@ public class BabyChartController : ControllerBase
         _babyWeightChartService = babyWeightChartService;
     }
 
+    [Authorize]
     [HttpPost("length/add")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -39,6 +41,7 @@ public class BabyChartController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("length/delete")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -54,6 +57,7 @@ public class BabyChartController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("length/edit")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -69,6 +73,7 @@ public class BabyChartController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("length/get")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -99,6 +104,7 @@ public class BabyChartController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("weight/add")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -114,6 +120,7 @@ public class BabyChartController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("weight/delete")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -129,6 +136,7 @@ public class BabyChartController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost("weight/edit")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -144,6 +152,7 @@ public class BabyChartController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("weight/get")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
