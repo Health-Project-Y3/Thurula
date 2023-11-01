@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using System.Text.RegularExpressions;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using thurula.Models;
 
@@ -95,10 +96,9 @@ public class ForumService : IForumService
     {
         var skip = (page - 1) * pageSize;
 
-        // Define a filter to search for questions containing the query string in the Question or Description fields
-        var filter = Builders<ForumQuestion>.Filter.Where(q =>
-            q.Visible && (q.Question.Contains(query) || q.Description.Contains(query))
-        );
+        // Define a filter to search for questions containing the query string in the Question, Description or Keywords fields
+        var filter = Builders<ForumQuestion>.Filter.Regex(q => q.Question, new BsonRegularExpression(query, "i"))
+                     | Builders<ForumQuestion>.Filter.Regex(q => q.Description, new BsonRegularExpression(query, "i"));
 
         // Sort by date (or any other sorting criteria you prefer)
         var sort = Builders<ForumQuestion>.Sort.Descending(q => q.Date);
@@ -114,11 +114,13 @@ public class ForumService : IForumService
         return questions;
     }
 
-    public void AddQuestion(ForumQuestion question)
+
+    public ForumQuestion AddQuestion(ForumQuestion question)
     {
         if (question.Description == "") throw new Exception("Description cannot be empty");
         if (question.Question == "") throw new Exception("Question cannot be empty");
         _forumQuestions.InsertOne(question);
+        return question;
     }
 
     public void DeleteQuestion(string id)
@@ -126,7 +128,7 @@ public class ForumService : IForumService
         _forumQuestions.DeleteOne(question => question.Id == id);
     }
 
-    public void AddAnswer(string questionId, ForumAnswer answer)
+    public ForumAnswer AddAnswer(string questionId, ForumAnswer answer)
     {
         answer.Id = ObjectId.GenerateNewId().ToString();
         answer.QuestionId = questionId;
@@ -134,6 +136,7 @@ public class ForumService : IForumService
         var question = GetQuestion(questionId);
         question.Answers.Add(answer);
         _forumQuestions.ReplaceOne(q => q.Id == questionId, question);
+        return answer;
     }
 
     public void DeleteAnswer(string questionId, string answerId)

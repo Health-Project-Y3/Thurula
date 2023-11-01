@@ -11,10 +11,9 @@ public interface IForumService
     List<ForumQuestion> GetQuestionsBetweenDates(DateTime start, DateTime end, int page, int pageSize);
     List<ForumQuestion> GetRecentQuestions(int page, int pageSize);
     List<ForumQuestion> SearchQuestions(string query, int page, int pageSize);
-
-    void AddQuestion(ForumQuestion question);
+    ForumQuestion AddQuestion(ForumQuestion question);
     void DeleteQuestion(string id);
-    void AddAnswer(string questionId, ForumAnswer answer);
+    ForumAnswer AddAnswer(string questionId, ForumAnswer answer);
     void DeleteAnswer(string questionId, string answerId);
     void UpvoteQuestion(string questionId);
     void UndoUpvoteQuestion(string questionId);

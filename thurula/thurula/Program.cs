@@ -66,6 +66,11 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBabyNameService, BabyNameService>();
 builder.Services.AddScoped<IForumService, ForumService>();
 builder.Services.AddScoped<IUserExerciseService, UserExerciseService>();
+builder.Services.AddScoped<IUserWeightService, UserWeightService>();
+builder.Services.AddScoped<IUserDrinkingService, UserDrinkingService>();
+builder.Services.AddScoped<IUserBpService, UserBpService>();
+builder.Services.AddScoped<IBmiService, BmiService>();
+builder.Services.AddScoped<IEyeCheckupService, EyeCheckupService>();
 
 
 builder.Services.AddSignalR(hubOptions => {
