@@ -17,4 +17,8 @@ public interface IChecklistService
     List<Checklist> GetAllWeek5();
     List<Checklist> GetAllWeek6();
     List<Checklist> GetAllWeek7();
+    List<Checklist> GetAllMonth2();
+    List<Checklist> GetAllWeek9();
+    List<Checklist> GetAllWeek10();
+    List<Checklist> GetAllWeek11();
 }

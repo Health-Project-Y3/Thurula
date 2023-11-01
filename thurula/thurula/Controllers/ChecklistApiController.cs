@@ -205,6 +205,98 @@ public class ChecklistApiController : ControllerBase
         }
     }
 
+     [HttpGet("month2", Name = "GetMonth2List")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Checklist>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<List<Checklist>> GetMonth2List()
+    {
+        try
+        {
+            var month2List = _checklistService.GetAllMonth2(); 
+            if (month2List != null && month2List.Any())
+            {
+                return Ok(month2List);
+            }
+            else
+            {
+                return NotFound("here");
+            }
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+     [HttpGet("week9", Name = "GetWeek9List")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Checklist>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<List<Checklist>> GetWeek9List()
+    {
+        try
+        {
+            var week9List = _checklistService.GetAllWeek9(); 
+            if (week9List != null && week9List.Any())
+            {
+                return Ok(week9List);
+            }
+            else
+            {
+                return NotFound("here");
+            }
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+     [HttpGet("week10", Name = "GetWeek10List")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Checklist>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<List<Checklist>> GetWeek10List()
+    {
+        try
+        {
+            var week10List = _checklistService.GetAllWeek10(); 
+            if (week10List != null && week10List.Any())
+            {
+                return Ok(week10List);
+            }
+            else
+            {
+                return NotFound("here");
+            }
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+     [HttpGet("week11", Name = "GetWeek11List")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Checklist>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public ActionResult<List<Checklist>> GetWeek11List()
+    {
+        try
+        {
+            var week11List = _checklistService.GetAllWeek11(); 
+            if (week11List != null && week11List.Any())
+            {
+                return Ok(week11List);
+            }
+            else
+            {
+                return NotFound("here");
+            }
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
 
 
     [HttpPost]
